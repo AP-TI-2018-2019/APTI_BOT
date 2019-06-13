@@ -21,7 +21,7 @@ namespace APTI_BOT
         {
             try
             {
-                string result = System.IO.File.ReadAllText(@"config.json");
+                string result = System.IO.File.ReadAllText(@"config_apti.json");
                 config = JsonConvert.DeserializeObject<Config>(result);
             }
             catch (FileNotFoundException)
@@ -36,7 +36,7 @@ namespace APTI_BOT
                 pinLogId = ulong.Parse(Console.ReadLine());
                 config = new Config(discordToken, serverId, pinLogId);
                 string json = JsonConvert.SerializeObject(config);
-                using(StreamWriter sw = File.CreateText(@"config.json"))
+                using(StreamWriter sw = File.CreateText(@"config_apti.json"))
                 {
                     sw.WriteLine(json);
                 }
@@ -81,7 +81,21 @@ namespace APTI_BOT
             }
             else if (message.Source == MessageSource.System)
             {
-                await message.DeleteAsync();
+                if(message.Author.Username == "APTI")
+                    await message.DeleteAsync();
+                else
+                {
+                    await message.Author.SendMessageAsync("Hey, welkom in onze server! Om volledige toegang tot de server te krijgen heb ik je naam & klas nodig in het volgende formaat: {Naam} - {Jaar}TI{Groep}. Voorbeeld: Maxim - 1TIC");
+                }
+            }
+            else if(message.Channel is IPrivateChannel && message.Source == MessageSource.User)
+            {
+                var guild = _client.GetGuild(config.ServerId);
+                var user = guild.GetUser(message.Author.Id);
+                Console.Write(message.Content);
+                await user.ModifyAsync(x => {
+                    x.Nickname = message.Content;
+                });
             }
             else if (message.Content == "!site")
             {
