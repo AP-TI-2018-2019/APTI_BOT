@@ -21,7 +21,7 @@ namespace APTI_BOT
         {
             try
             {
-                string result = System.IO.File.ReadAllText(@"../../config.json");
+                string result = System.IO.File.ReadAllText(@"config.json");
                 config = JsonConvert.DeserializeObject<Config>(result);
             }
             catch (FileNotFoundException)
@@ -36,7 +36,7 @@ namespace APTI_BOT
                 pinLogId = ulong.Parse(Console.ReadLine());
                 config = new Config(discordToken, serverId, pinLogId);
                 string json = JsonConvert.SerializeObject(config);
-                using(StreamWriter sw = File.CreateText(@"../../config.json"))
+                using(StreamWriter sw = File.CreateText(@"config.json"))
                 {
                     sw.WriteLine(json);
                 }
