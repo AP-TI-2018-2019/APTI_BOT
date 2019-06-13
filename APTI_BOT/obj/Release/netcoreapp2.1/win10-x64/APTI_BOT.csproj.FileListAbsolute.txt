@@ -1,0 +1,14 @@
+C:\Users\maxim\source\repos\APTI_BOT\APTI_BOT\bin\Release\netcoreapp2.1\win10-x64\hostpolicy.dll
+C:\Users\maxim\source\repos\APTI_BOT\APTI_BOT\bin\Release\netcoreapp2.1\win10-x64\hostfxr.dll
+C:\Users\maxim\source\repos\APTI_BOT\APTI_BOT\bin\Release\netcoreapp2.1\win10-x64\APTI_BOT.exe
+C:\Users\maxim\source\repos\APTI_BOT\APTI_BOT\bin\Release\netcoreapp2.1\win10-x64\APTI_BOT.deps.json
+C:\Users\maxim\source\repos\APTI_BOT\APTI_BOT\bin\Release\netcoreapp2.1\win10-x64\APTI_BOT.runtimeconfig.json
+C:\Users\maxim\source\repos\APTI_BOT\APTI_BOT\bin\Release\netcoreapp2.1\win10-x64\APTI_BOT.runtimeconfig.dev.json
+C:\Users\maxim\source\repos\APTI_BOT\APTI_BOT\bin\Release\netcoreapp2.1\win10-x64\APTI_BOT.dll
+C:\Users\maxim\source\repos\APTI_BOT\APTI_BOT\bin\Release\netcoreapp2.1\win10-x64\APTI_BOT.pdb
+C:\Users\maxim\source\repos\APTI_BOT\APTI_BOT\obj\Release\netcoreapp2.1\win10-x64\APTI_BOT.csprojAssemblyReference.cache
+C:\Users\maxim\source\repos\APTI_BOT\APTI_BOT\obj\Release\netcoreapp2.1\win10-x64\APTI_BOT.csproj.CoreCompileInputs.cache
+C:\Users\maxim\source\repos\APTI_BOT\APTI_BOT\obj\Release\netcoreapp2.1\win10-x64\APTI_BOT.AssemblyInfoInputs.cache
+C:\Users\maxim\source\repos\APTI_BOT\APTI_BOT\obj\Release\netcoreapp2.1\win10-x64\APTI_BOT.AssemblyInfo.cs
+C:\Users\maxim\source\repos\APTI_BOT\APTI_BOT\obj\Release\netcoreapp2.1\win10-x64\APTI_BOT.dll
+C:\Users\maxim\source\repos\APTI_BOT\APTI_BOT\obj\Release\netcoreapp2.1\win10-x64\APTI_BOT.pdb

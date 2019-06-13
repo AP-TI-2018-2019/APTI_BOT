@@ -15,7 +15,7 @@ namespace APTI_BOT
         public static void Main(string[] args)
         => new Program().MainAsync().GetAwaiter().GetResult();
 
-        Config config;// = new Config("", 538812803944022017, 539223601203773440);
+        Config config;
 
         public async Task MainAsync()
         {
