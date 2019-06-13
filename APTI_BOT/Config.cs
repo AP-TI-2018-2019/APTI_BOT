@@ -5,12 +5,18 @@
         public string DiscordToken { get; set; }
         public ulong ServerId { get; set; }
         public ulong PinLogId { get; set; }
+        public ulong Jaar1RolId { get; set; }
+        public ulong Jaar2RolId { get; set; }
+        public ulong Jaar3RolId { get; set; }
 
-        public Config(string discordToken, ulong serverId, ulong pinLogId)
+        public Config(string discordToken, ulong serverId, ulong pinLogId, ulong jaar1RolId, ulong jaar2RolId, ulong jaar3RolId)
         {
             DiscordToken = discordToken;
             ServerId = serverId;
             PinLogId = pinLogId;
+            Jaar1RolId = jaar1RolId;
+            Jaar2RolId = jaar2RolId;
+            Jaar3RolId = jaar3RolId;
         }
     }
 }
