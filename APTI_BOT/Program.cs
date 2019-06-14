@@ -172,7 +172,7 @@ namespace APTI_BOT
 
         private async Task ReactionAdded(Cacheable<IUserMessage, ulong> message, ISocketMessageChannel channel, SocketReaction reaction)
         {
-            if (channel is IPrivateChannel && reaction.User.Value.IsBot)
+            if (channel is IPrivateChannel && !reaction.User.Value.IsBot)
             {
                 var user = _client.GetUser(reaction.UserId);
                 Console.WriteLine(user.ToString());
