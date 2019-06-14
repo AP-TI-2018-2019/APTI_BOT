@@ -63,7 +63,7 @@
         }
       },
       "runtimes": {
-        "ubuntu.16.10-x64": {
+        "win10-x64": {
           "#import": []
         }
       }
