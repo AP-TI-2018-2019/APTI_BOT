@@ -8,8 +8,9 @@
         public ulong Jaar1RolId { get; set; }
         public ulong Jaar2RolId { get; set; }
         public ulong Jaar3RolId { get; set; }
+        public ulong StudentRolId { get; set; }
 
-        public Config(string discordToken, ulong serverId, ulong pinLogId, ulong jaar1RolId, ulong jaar2RolId, ulong jaar3RolId)
+        public Config(string discordToken, ulong serverId, ulong pinLogId, ulong jaar1RolId, ulong jaar2RolId, ulong jaar3RolId, ulong studentRolId)
         {
             DiscordToken = discordToken;
             ServerId = serverId;
@@ -17,6 +18,7 @@
             Jaar1RolId = jaar1RolId;
             Jaar2RolId = jaar2RolId;
             Jaar3RolId = jaar3RolId;
+            StudentRolId = studentRolId;
         }
     }
 }

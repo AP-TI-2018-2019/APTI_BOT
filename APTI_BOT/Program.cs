@@ -23,11 +23,11 @@ namespace APTI_BOT
             {
                 string result = System.IO.File.ReadAllText(@"config_apti.json");
                 config = JsonConvert.DeserializeObject<Config>(result);
-                if (config.Jaar1RolId == 0)
+                if (config.Jaar1RolId == 0 || config.StudentRolId == 0)
                 {
                     Console.WriteLine("Je configuratiebestand is verouderd. Om verder te gaan moet je nog extra gegevens invoeren.");
-                    JaarRolInvoer(out ulong jaar1RolId, out ulong jaar2RolId, out ulong jaar3RolId);
-                    config = new Config(config.DiscordToken, config.ServerId, config.PinLogId, jaar1RolId, jaar2RolId, jaar3RolId);
+                    JaarRolInvoer(out ulong jaar1RolId, out ulong jaar2RolId, out ulong jaar3RolId, out ulong studentRolId);
+                    config = new Config(config.DiscordToken, config.ServerId, config.PinLogId, jaar1RolId, jaar2RolId, jaar3RolId, studentRolId);
                     string json = JsonConvert.SerializeObject(config);
                     using (StreamWriter sw = File.CreateText(@"config_apti.json"))
                     {
@@ -38,15 +38,15 @@ namespace APTI_BOT
             catch (FileNotFoundException)
             {
                 string discordToken;
-                ulong serverId, pinLogId, jaar1RolId, jaar2RolId, jaar3RolId;
+                ulong serverId, pinLogId;
                 Console.Write("Geef bot token: ");
                 discordToken = Console.ReadLine();
                 Console.Write("Geef server id: ");
                 serverId = ulong.Parse(Console.ReadLine());
                 Console.Write("Geef pin-log kanaal id: ");
                 pinLogId = ulong.Parse(Console.ReadLine());
-                JaarRolInvoer(out jaar1RolId, out jaar2RolId, out jaar3RolId);
-                config = new Config(discordToken, serverId, pinLogId, jaar1RolId, jaar2RolId, jaar3RolId);
+                JaarRolInvoer(out ulong jaar1RolId, out ulong jaar2RolId, out ulong jaar3RolId, out ulong studentRolId);
+                config = new Config(discordToken, serverId, pinLogId, jaar1RolId, jaar2RolId, jaar3RolId, studentRolId);
                 string json = JsonConvert.SerializeObject(config);
                 using (StreamWriter sw = File.CreateText(@"config_apti.json"))
                 {
@@ -69,7 +69,7 @@ namespace APTI_BOT
             await Task.Delay(-1);
         }
 
-        private static void JaarRolInvoer(out ulong jaar1RolId, out ulong jaar2RolId, out ulong jaar3RolId)
+        private static void JaarRolInvoer(out ulong jaar1RolId, out ulong jaar2RolId, out ulong jaar3RolId, out ulong studentRolId)
         {
             Console.Write("Geef id van rol 'Jaar 1': ");
             jaar1RolId = ulong.Parse(Console.ReadLine());
@@ -77,6 +77,8 @@ namespace APTI_BOT
             jaar2RolId = ulong.Parse(Console.ReadLine());
             Console.Write("Geef id van rol 'Jaar 3': ");
             jaar3RolId = ulong.Parse(Console.ReadLine());
+            Console.Write("Geef id van rol 'Student': ");
+            studentRolId = ulong.Parse(Console.ReadLine());
         }
 
         private Task Log(LogMessage msg)
@@ -193,6 +195,8 @@ namespace APTI_BOT
                     Console.WriteLine(role.ToString());
                     await guild.GetUser(reaction.UserId).AddRoleAsync(role);
                 }
+                var studentRole = guild.GetRole(config.StudentRolId);
+                await guild.GetUser(reaction.UserId).AddRoleAsync(studentRole);
             }
             else if (reaction.Emote.ToString() == "📌")
             {
