@@ -55,7 +55,10 @@ namespace APTI_BOT
                 Console.WriteLine("Configuratie compleet! De bot gaat nu starten.");
             }
             Environment.SetEnvironmentVariable("DiscordToken", config.DiscordToken);
-            _client = new DiscordSocketClient();
+            _client = new DiscordSocketClient(new DiscordSocketConfig
+            {
+                LogLevel = LogSeverity.Info
+            });
             _client.MessageReceived += MessageReceived;
             _client.ReactionAdded += ReactionAdded;
             _client.ReactionRemoved += ReactionRemoved;
@@ -68,6 +71,7 @@ namespace APTI_BOT
             // Block this task until the program is closed.
             await Task.Delay(-1);
         }
+
 
         private static void JaarRolInvoer(out ulong jaar1RolId, out ulong jaar2RolId, out ulong jaar3RolId, out ulong studentRolId)
         {
@@ -111,7 +115,7 @@ namespace APTI_BOT
             }
             else if (message.Source == MessageSource.System || message.Content == "!start")
             {
-                if (message.Author.Username == "APTI")
+                if (message.Author.Id == _client.CurrentUser.Id)
                     await message.DeleteAsync();
                 else
                 {
@@ -169,7 +173,7 @@ namespace APTI_BOT
                 await message.Channel.SendMessageAsync("https://apti.ml/discord");
             }else if(message.Content == "!help")
             {
-                await message.Channel.SendMessageAsync("!AP - TI!\n!site - geeft link naar onze site\n!github | !gh - geeft link naar onze GitHub-repo\n!youtube | !yt - geeft link naar ons YouTube-kanaal\n!discord | !dc - geeft link naar onze Discord-uitnodigingspagina");
+                await message.Channel.SendMessageAsync("!AP - TI!\n!site - geeft link naar onze site\n!github | !gh - geeft link naar onze GitHub-repo\n!youtube | !yt - geeft link naar ons YouTube-kanaal\n!discord | !dc - geeft link naar onze Discord-uitnodigingspagina\n!date - geeft de datum van vandaag\n!time - geeft de huidige tijd\n!datetime - geeft de huidige datum en tijd");
             }
         }
 
@@ -245,9 +249,21 @@ namespace APTI_BOT
                     await guild.GetUser(reaction.UserId).RemoveRoleAsync(role);
                 }
             }
-            //eventueel unpinnen maken
+            else
+            {
+                //if (reaction.Emote.ToString() == "📌")
+                //{
+                //    Console.WriteLine(message.Id);
+                //    Console.WriteLine(channel.Id);
+                //    IUserMessage messageToUnPin = (IUserMessage)await channel.GetMessageAsync(message.Id);
+
+                //    if (messageToUnPin.Reactions == null || !messageToUnPin.Reactions.ContainsKey(reaction.Emote))
+                //    {
+                //        await ((IUserMessage)channel.GetMessageAsync(message.Id)).UnpinAsync();
+                //        await ((ISocketMessageChannel)_client.GetChannel(config.PinLogId)).SendMessageAsync("Bericht unpinned");
+                //    }
+                //}
+            }
         }
-
-
     }
 }
