@@ -167,6 +167,9 @@ namespace APTI_BOT
             else if (message.Content == "!discord" || message.Content == "!dc")
             {
                 await message.Channel.SendMessageAsync("https://apti.ml/discord");
+            }else if(message.Content == "!help")
+            {
+                await message.Channel.SendMessageAsync("!AP - TI!\n!site - geeft link naar onze site\n!github | !gh - geeft link naar onze GitHub-repo\n!youtube | !yt - geeft link naar ons YouTube-kanaal\n!discord | !dc - geeft link naar onze Discord-uitnodigingspagina");
             }
         }
 
