@@ -46,8 +46,9 @@
               "version": "[2.1.1, )"
             },
             "Microsoft.NETCore.App": {
+              "suppressParent": "All",
               "target": "Package",
-              "version": "[2.1.11, )",
+              "version": "[2.1.0, )",
               "autoReferenced": true
             },
             "Newtonsoft.Json": {
@@ -60,11 +61,6 @@
           ],
           "assetTargetFallback": true,
           "warn": true
-        }
-      },
-      "runtimes": {
-        "ubuntu.16.10-x64": {
-          "#import": []
         }
       }
     }

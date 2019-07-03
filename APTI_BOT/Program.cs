@@ -123,7 +123,7 @@ namespace APTI_BOT
                 string naam = message.Content.Substring(5);
                 var guild = _client.GetGuild(config.ServerId);
                 var user = guild.GetUser(message.Author.Id);
-                Console.Write(message.Content);   
+                Console.Write(message.Content);
                 try
                 {
                     await user.ModifyAsync(x =>
@@ -133,9 +133,9 @@ namespace APTI_BOT
                     var sent = await message.Author.SendMessageAsync($"Je nickname is ingesteld op {naam}. De volgende stap is je jaar kiezen door te klikken op één (of meerdere) emoji onder dit bericht. Als je vakken moet meenemen, dan kan je ook het vorige jaar kiezen. Als je geen kanalen meer wilt zien van een jaar dan kan je gewoon opnieuw op de emoji ervan klikken. Als je jaar niet verandert dan is de sessie van deze chat verlopen en moet je de sessie terug activeren door `!jaar` te typen.");
                     await sent.AddReactionsAsync(emoji);
                 }
-                catch(Discord.Net.HttpException e)
+                catch (Discord.Net.HttpException e)
                 {
-                    if(e.HttpCode == System.Net.HttpStatusCode.Forbidden)
+                    if (e.HttpCode == System.Net.HttpStatusCode.Forbidden)
                     {
                         var sent_error = await message.Author.SendMessageAsync("Ik heb niet de machtigingen om jouw naam te veranderen, je zal dit zelf moeten doen. Als troost mag je wel kiezen in welk jaar je zit :)");
                         await sent_error.AddReactionsAsync(emoji);
@@ -147,7 +147,7 @@ namespace APTI_BOT
                     }
                 }
             }
-            else if(message.Channel is IPrivateChannel && message.Source == MessageSource.User && message.Content == "!jaar")
+            else if (message.Channel is IPrivateChannel && message.Source == MessageSource.User && message.Content == "!jaar")
             {
                 var sent = await message.Author.SendMessageAsync("Kies je jaar door op één of meer van de emoji onder dit bericht te klikken.");
                 await sent.AddReactionsAsync(emoji);
@@ -204,13 +204,26 @@ namespace APTI_BOT
                 if (!messageToPin.IsPinned)
                 {
                     await messageToPin.PinAsync();
-                    var embed = new EmbedBuilder()
-                        .WithTitle("Pinned")
-                        .AddField("Bericht", messageToPin.Content, false)
-                        .AddField("Kanaal", $"<#{messageToPin.Channel.Id}>", true)
-                        .AddField("Door", reaction.User.Value.Mention, true)
-                        .WithAuthor(messageToPin.Author.ToString(), messageToPin.Author.GetAvatarUrl(), messageToPin.GetJumpUrl())
-                        .Build();
+                    var embedBuilder = new EmbedBuilder()
+                        .WithTitle("Pinned");
+                    try
+                    {
+                        embedBuilder = embedBuilder.AddField("Bericht", messageToPin.Content, false);
+                    }
+                    catch (System.ArgumentException)
+                    {
+                        foreach(IAttachment attachment in messageToPin.Attachments)
+                        {
+                            if(attachment.IsSpoiler())
+                                embedBuilder = embedBuilder.AddField("Afbeelding", $"||{attachment.Url}||", false);
+                            else
+                                embedBuilder = embedBuilder.WithImageUrl(attachment.Url);
+                        }
+                    }
+                    var embed = embedBuilder.AddField("Kanaal", $"<#{messageToPin.Channel.Id}>", true)
+                    .AddField("Door", reaction.User.Value.Mention, true)
+                    .WithAuthor(messageToPin.Author.ToString(), messageToPin.Author.GetAvatarUrl(), messageToPin.GetJumpUrl())
+                    .Build();
                     await ((ISocketMessageChannel)_client.GetChannel(config.PinLogId)).SendMessageAsync("", false, embed);
                 }
             }
