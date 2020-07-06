@@ -12,6 +12,7 @@ namespace APTI_BOT
     {
         private const string HERINNERCOMMAND = "herrinner me";
         private DiscordSocketClient _client;
+        Emoji[] emoji = new Emoji[] { new Emoji("🥇") , new Emoji("🥈"), new Emoji("🥉") };
         public static void Main(string[] args)
         {
             new Program().MainAsync().GetAwaiter().GetResult();
@@ -103,10 +104,6 @@ namespace APTI_BOT
 
         private async Task MessageReceived(SocketMessage message)//Nog deftige command handlers maken https://discord.foxbot.me/docs/guides/commands/intro.html
         {
-            Emoji[] emoji = new Emoji[3];
-            emoji[0] = new Emoji("🥇");
-            emoji[1] = new Emoji("🥈");
-            emoji[2] = new Emoji("🥉");
             if (message.Content.Contains("herinner me") || message.Content.Contains("herinner"))
             {
                 await message.Channel.SendMessageAsync("oke");
@@ -273,7 +270,10 @@ namespace APTI_BOT
                 {
                     if (reaction.Emote.ToString() == "✅" && !reaction.User.Value.IsBot)
                     {
-                        await guild.GetUser(ulong.Parse(embeds.Current.Fields[0].Value)).AddRoleAsync(guild.GetRole(config.StudentRolId));
+                        var user = guild.GetUser(ulong.Parse(embeds.Current.Fields[0].Value));
+                        await user.AddRoleAsync(guild.GetRole(config.StudentRolId));
+                        var sent = await user.SendMessageAsync("Jouw inzending werd zojuist goedgekeurd. De volgende stap is je jaar kiezen door te klikken op één (of meerdere) emoji onder dit bericht. Als je vakken moet meenemen, dan kan je ook het vorige jaar kiezen. Als je geen kanalen meer wilt zien van een jaar dan kan je gewoon opnieuw op de emoji ervan klikken. Als je jaar niet verandert dan is de sessie van deze chat verlopen en moet je de sessie terug activeren door `!jaar` te typen.");
+                        await sent.AddReactionsAsync(emoji);
                     }
                     else if (reaction.Emote.ToString() == "❌" && !reaction.User.Value.IsBot)
                     {
