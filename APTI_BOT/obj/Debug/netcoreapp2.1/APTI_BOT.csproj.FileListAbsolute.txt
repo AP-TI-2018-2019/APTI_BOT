@@ -9,3 +9,4 @@ C:\Users\maxim\source\repos\APTI_BOT\APTI_BOT\obj\Debug\netcoreapp2.1\APTI_BOT.A
 C:\Users\maxim\source\repos\APTI_BOT\APTI_BOT\bin\Debug\netcoreapp2.1\APTI_BOT.pdb
 C:\Users\maxim\source\repos\APTI_BOT\APTI_BOT\obj\Debug\netcoreapp2.1\APTI_BOT.dll
 C:\Users\maxim\source\repos\APTI_BOT\APTI_BOT\obj\Debug\netcoreapp2.1\APTI_BOT.pdb
+C:\Users\maxim\Source\Repos\APTI_BOT\APTI_BOT\obj\Debug\netcoreapp2.1\APTI_BOT.genruntimeconfig.cache
