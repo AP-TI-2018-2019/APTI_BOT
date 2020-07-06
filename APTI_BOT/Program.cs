@@ -99,18 +99,14 @@ namespace APTI_BOT
             emoji[0] = new Emoji("🥇");
             emoji[1] = new Emoji("🥈");
             emoji[2] = new Emoji("🥉");
-            if (message.Content.Contains("!AP"))
-            {
-                await message.Channel.SendMessageAsync("TI!");
-            }
-            else if (message.Content.Contains("herinner me"))
+            if (message.Content.Contains("herinner me") || message.Content.Contains("herinner"))
             {
                 await message.Channel.SendMessageAsync("oke");
                 string herinnering = message.Content.Substring(HERINNERCOMMAND.Length);
                 int startHerinnering = herinnering.IndexOf(' ');
                 startHerinnering = herinnering.IndexOf(' ', startHerinnering + 1);
                 herinnering = herinnering.Substring(startHerinnering);
-                if (herinnering.Contains("seconden") || herinnering.Contains("second") || herinnering.Contains("minuten") || herinnering.Contains("minuut") || herinnering.Contains("uren") || herinnering.Contains("uur") || herinnering.Contains("dagen") || herinnering.Contains("dag") || herinnering.Contains("jaar") || herinnering.Contains("jaren") || herinnering.Contains("maanden") || herinnering.Contains("maand"))
+                if (herinnering.Contains("morgen") || herinnering.Contains("seconden") || herinnering.Contains("second") || herinnering.Contains("minuten") || herinnering.Contains("minuut") || herinnering.Contains("uren") || herinnering.Contains("uur") || herinnering.Contains("dagen") || herinnering.Contains("dag") || herinnering.Contains("jaar") || herinnering.Contains("jaren") || herinnering.Contains("maanden") || herinnering.Contains("maand"))
                 {
                     int secondIndex = herinnering.LastIndexOf("seconden") != -1 ? herinnering.LastIndexOf("seconden") : herinnering.LastIndexOf("second");
                     int minuutIndex = herinnering.LastIndexOf("minuten") != -1 ? herinnering.LastIndexOf("minuten") : herinnering.LastIndexOf("minuut");
@@ -125,6 +121,7 @@ namespace APTI_BOT
                     int minuten = KrijgAantal(herinnering, minuutIndex != -1 ? minuutIndex : 0);
                     int uren = KrijgAantal(herinnering, uurIndex != -1 ? uurIndex : 0);
                     int dagen = KrijgAantal(herinnering, dagIndex != -1 ? dagIndex : 0);
+                    dagen += herinnering.LastIndexOf("morgen") == -1 ? 0 : 1;
                     int weken = KrijgAantal(herinnering, weekIndex != -1 ? weekIndex : 0);
                     int maanden = KrijgAantal(herinnering, maandIndex != -1 ? maandIndex : 0);
                     int jaren = KrijgAantal(herinnering, jaarIndex != -1 ? jaarIndex : 0);
@@ -135,6 +132,11 @@ namespace APTI_BOT
                     await message.Channel.SendMessageAsync($"Herinnering om {herinnering.Substring(0, herinnering.LastIndexOf("over") != -1? herinnering.LastIndexOf("over") : herinnering.LastIndexOf("binnen"))} ingesteld op {datumHerinnering.ToShortDateString()} om {datumHerinnering.ToShortTimeString()}.");
                 }
             }
+            // Dit nog deftig implmenteren
+            /*else if (message.Content == "status")
+            {
+                await _client.SetGameAsync("Live op YouTube", "https://www.youtube.com/channel/UCcZPpgyhpB-o1Q5fXxbN5_w", ActivityType.Streaming);
+            }*/
             else if (message.Content == "!date")
             {
                 await message.Channel.SendMessageAsync(DateTime.Today.ToLongDateString());
@@ -190,25 +192,32 @@ namespace APTI_BOT
                 var sent = await message.Author.SendMessageAsync("Kies je jaar door op één of meer van de emoji onder dit bericht te klikken.");
                 await sent.AddReactionsAsync(emoji);
             }
-            else if (message.Content == "!site")
+            else if (message.Source == MessageSource.User)
             {
-                await message.Channel.SendMessageAsync("https://apti.ml");
-            }
-            else if (message.Content == "!github" || message.Content == "!gh")
-            {
-                await message.Channel.SendMessageAsync("https://apti.ml/github");
-            }
-            else if (message.Content == "!youtube" || message.Content == "!yt")
-            {
-                await message.Channel.SendMessageAsync("https://apti.ml/youtube");
-            }
-            else if (message.Content == "!discord" || message.Content == "!dc")
-            {
-                await message.Channel.SendMessageAsync("https://apti.ml/discord");
-            }
-            else if (message.Content == "!help")
-            {
-                await message.Channel.SendMessageAsync("!AP - TI!\n!site - geeft link naar onze site\n!github | !gh - geeft link naar onze GitHub-repo\n!youtube | !yt - geeft link naar ons YouTube-kanaal\n!discord | !dc - geeft link naar onze Discord-uitnodigingspagina\n!date - geeft de datum van vandaag\n!time - geeft de huidige tijd\n!datetime - geeft de huidige datum en tijd");
+                if (message.Content.Contains("!AP"))
+                {
+                    await message.Channel.SendMessageAsync("TI!");
+                }
+                else if (message.Content == "!site")
+                {
+                    await message.Channel.SendMessageAsync("https://apti.be");
+                }
+                else if (message.Content == "!github" || message.Content == "!gh")
+                {
+                    await message.Channel.SendMessageAsync("https://apti.be/github");
+                }
+                else if (message.Content == "!youtube" || message.Content == "!yt")
+                {
+                    await message.Channel.SendMessageAsync("https://apti.be/youtube");
+                }
+                else if (message.Content == "!discord" || message.Content == "!dc")
+                {
+                    await message.Channel.SendMessageAsync("https://apti.be/discord");
+                }
+                else if (message.Content == "!help")
+                {
+                    await message.Channel.SendMessageAsync("!AP - TI!\n!site - geeft link naar onze site\n!github | !gh - geeft link naar onze GitHub-repo\n!youtube | !yt - geeft link naar ons YouTube-kanaal\n!discord | !dc - geeft link naar onze Discord-uitnodigingspagina\n!date - geeft de datum van vandaag\n!time - geeft de huidige tijd\n!datetime - geeft de huidige datum en tijd");
+                }
             }
         }
 
