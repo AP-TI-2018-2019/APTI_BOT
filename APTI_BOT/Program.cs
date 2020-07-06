@@ -204,8 +204,6 @@ namespace APTI_BOT
                         x.Nickname = naam;
                     });
                     IUserMessage sent = await message.Author.SendMessageAsync($"Je nickname is ingesteld op {naam}. De volgende stap is verifiëren dat je een échte AP student bent. Om dit te doen stuur je een selfie met jouw AP studentenkaart. Zodra de verificatie is geslaagd krijg je hier een bevestiging.");
-                    // De volgende stap is je jaar kiezen door te klikken op één (of meerdere) emoji onder dit bericht. Als je vakken moet meenemen, dan kan je ook het vorige jaar kiezen. Als je geen kanalen meer wilt zien van een jaar dan kan je gewoon opnieuw op de emoji ervan klikken. Als je jaar niet verandert dan is de sessie van deze chat verlopen en moet je de sessie terug activeren door `!jaar` te typen."
-                    // await sent.AddReactionsAsync(emoji);
                 }
                 catch (Discord.Net.HttpException e)
                 {
@@ -257,21 +255,36 @@ namespace APTI_BOT
 
         private async Task ReactionAdded(Cacheable<IUserMessage, ulong> message, ISocketMessageChannel channel, SocketReaction reaction)
         {
-            if(channel.Id == config.VerificatieId)
+            SocketGuild guild = _client.GetGuild(config.ServerId);
+            if (channel.Id == config.VerificatieId)
             {
-                if(reaction.Emote.ToString() == "✅" && !reaction.User.Value.IsBot)
+                System.Collections.Generic.IEnumerator<IEmbed> embeds = message.DownloadAsync().Result.Embeds.GetEnumerator();
+                embeds.MoveNext();
+                System.Collections.Generic.IEnumerator<SocketRole> roles = guild.GetUser(ulong.Parse(embeds.Current.Fields[0].Value)).Roles.GetEnumerator();
+                bool student = false;
+                while (roles.MoveNext())
                 {
-                    var embeds = message.DownloadAsync().Result.Embeds.GetEnumerator();
-                    embeds.MoveNext();
-                    Console.WriteLine(embeds.Current.Fields[0].Value);
-
+                    if (roles.Current.Id == config.StudentRolId)
+                    {
+                        student = true;
+                    }
+                }
+                if (!student)
+                {
+                    if (reaction.Emote.ToString() == "✅" && !reaction.User.Value.IsBot)
+                    {
+                        await guild.GetUser(ulong.Parse(embeds.Current.Fields[0].Value)).AddRoleAsync(guild.GetRole(config.StudentRolId));
+                    }
+                    else if (reaction.Emote.ToString() == "❌" && !reaction.User.Value.IsBot)
+                    {
+                        await guild.GetUser(ulong.Parse(embeds.Current.Fields[0].Value)).SendMessageAsync("Jouw inzending werd afgekeurd. Dien een nieuwe foto in.");
+                    }
                 }
             }
             if (channel is IPrivateChannel && !reaction.User.Value.IsBot)
             {
                 SocketUser user = _client.GetUser(reaction.UserId);
                 Console.WriteLine(user.ToString());
-                SocketGuild guild = _client.GetGuild(config.ServerId);
                 if (reaction.Emote.ToString() == "🥇")
                 {
                     SocketRole role = guild.GetRole(config.Jaar1RolId);
