@@ -185,14 +185,11 @@ namespace APTI_BOT
                         embedBuilder = embedBuilder.WithImageUrl(attachment.Url);
                     }
                 }
-                Embed embed = embedBuilder.WithAuthor(message.Author.ToString(), message.Author.GetAvatarUrl())
+                Embed embed = embedBuilder.AddField("Id", message.Author.Id.ToString(), false).WithAuthor(message.Author.ToString(), message.Author.GetAvatarUrl()).WithColor(Color.Blue).WithFooter(footer => footer.WithText($"Account gecreëerd op: {message.Author.CreatedAt}"))
                        .Build();
                 Emoji[] emojiVerificatie = new Emoji[] { new Emoji("✅"), new Emoji("❌") };
                 Discord.Rest.RestUserMessage verification = await ((ISocketMessageChannel)_client.GetChannel(config.VerificatieId)).SendMessageAsync("", false, embed);
-                Console.WriteLine(verification.Channel);
                 await verification.AddReactionsAsync(emojiVerificatie);
-                
-
             }
             else if (message.Channel is IPrivateChannel && message.Source == MessageSource.User && message.Content.Contains("!naam") && message.Content.Substring(0, 5) == "!naam")
             {
@@ -260,6 +257,16 @@ namespace APTI_BOT
 
         private async Task ReactionAdded(Cacheable<IUserMessage, ulong> message, ISocketMessageChannel channel, SocketReaction reaction)
         {
+            if(channel.Id == config.VerificatieId)
+            {
+                if(reaction.Emote.ToString() == "✅" && !reaction.User.Value.IsBot)
+                {
+                    var embeds = message.DownloadAsync().Result.Embeds.GetEnumerator();
+                    embeds.MoveNext();
+                    Console.WriteLine(embeds.Current.Fields[0].Value);
+
+                }
+            }
             if (channel is IPrivateChannel && !reaction.User.Value.IsBot)
             {
                 SocketUser user = _client.GetUser(reaction.UserId);
