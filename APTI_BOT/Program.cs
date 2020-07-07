@@ -12,6 +12,14 @@ namespace APTI_BOT
     internal class Program
     {
         /*
+         * Contributors
+         */
+        private const string DISCORD_CHARACTER = "@";
+        private const string DISCORD_MAXIM = DISCORD_CHARACTER + "mixxamm";
+        private const string DISCORD_DANA = DISCORD_CHARACTER + "Ding Dong Gaming";
+        private static readonly string BOT_CONTRIBUTORS = $"{DISCORD_MAXIM} of {DISCORD_DANA}";
+
+        /*
          * Gebruiker commands
          */
         private const string COMMAND_CHARACTER = "!";
@@ -87,7 +95,7 @@ namespace APTI_BOT
             {
                 string result = System.IO.File.ReadAllText(@"config_apti.json");
                 config = JsonConvert.DeserializeObject<Config>(result);
-                if (ValideerId(config.Jaar1RolId) ||  ValideerId(config.StudentRolId) || ValideerId(config.VerificatieId))
+                if (ValideerId(config.Jaar1RolId) || ValideerId(config.StudentRolId) || ValideerId(config.VerificatieId))
                 {
                     Console.WriteLine("Je configuratiebestand is verouderd. Om verder te gaan moet je nog extra gegevens invoeren.");
                     if (ValideerId(config.Jaar1RolId) || ValideerId(config.StudentRolId))
@@ -225,10 +233,10 @@ namespace APTI_BOT
                 {
                     StringBuilder text = new StringBuilder();
                     text.Append("Hey, welkom in onze server!");
-                    text.Append("Ik ben de APTI-bot en mijn doel is om het toetreden tot de server eenvoudiger te maken.");
-                    text.Append("We zullen beginnen met je naam op de server in te stellen.");
-                    text.AppendLine("Om dit te doen type je je naam en klas in het volgende formaat: {Naam} - {Jaar}TI{Groep} voorafgegeaan door `!naam`.");
-                    text.AppendLine("Bijvoorbeeld: `!naam Maxim - 1TIC`.");
+                    text.Append(" Ik ben de APTI-bot en mijn doel is om het toetreden tot de server eenvoudiger te maken.");
+                    text.Append(" We zullen beginnen met je naam op de server in te stellen.");
+                    text.AppendLine(" Om dit te doen type je je naam en klas in het volgende formaat: {Naam} - {Jaar}TI{Groep} voorafgegeaan door `!naam`.");
+                    text.Append("Bijvoorbeeld: `!naam Maxim - 1TIC`.");
                     await message.Author.SendMessageAsync(text.ToString());
                 }
             }
@@ -277,12 +285,23 @@ namespace APTI_BOT
                     }
                     if (!student)
                     {
-                        await message.Author.SendMessageAsync($"Je nickname is ingesteld op {naam}. De volgende stap is verifiëren dat je een échte AP student bent. Om dit te doen stuur je een selfie met jouw AP studentenkaart. Zodra de verificatie is geslaagd krijg je hier een bevestiging.");
+                        StringBuilder text = new StringBuilder();
+                        text.Append($"Je nickname is ingesteld op {naam}.");
+                        text.Append(" De volgende stap is verifiëren dat je een échte AP student bent.");
+                        text.Append(" Om dit te doen stuur je een selfie met jouw AP studentenkaart.");
+                        text.Append(" Zodra de verificatie is geslaagd, krijg je hier een bevestiging.");
+                        await message.Author.SendMessageAsync(text.ToString());
                         await message.Author.SendFileAsync(@"../../../Assets/studentenkaart.png", "Zorg ervoor dat jouw gezicht goed zichtbaar is en de tekst van je studentenkaart leesbaar is.");
                     }
                     else
                     {
-                        IUserMessage sent = await message.Author.SendMessageAsync($"Je nickname is ingesteld op {naam}. De volgende stap is je jaar kiezen door te klikken op één (of meerdere) emoji onder dit bericht. Als je vakken moet meenemen, dan kan je ook het vorige jaar kiezen. Als je geen kanalen meer wilt zien van een jaar dan kan je gewoon opnieuw op de emoji ervan klikken. Als je jaar niet verandert dan is de sessie van deze chat verlopen en moet je de sessie terug activeren door `!jaar` te typen.");
+                        StringBuilder text = new StringBuilder();
+                        text.Append($"Je nickname is ingesteld op {naam}.");
+                        text.Append(" De volgende stap is je jaar kiezen door te klikken op één (of meerdere) emoji onder dit bericht.");
+                        text.Append(" Als je vakken moet meenemen, dan kan je ook het vorige jaar kiezen.");
+                        text.Append(" Als je geen kanalen meer wilt zien van een jaar, dan kan je gewoon opnieuw op de emoji ervan klikken.");
+                        text.Append(" Als je jaar niet verandert, dan is de sessie van deze chat verlopen en moet je de sessie terug activeren door `!jaar` te typen.");
+                        IUserMessage sent = await message.Author.SendMessageAsync(text.ToString());
                         await sent.AddReactionsAsync(emojiJaren);
                     }
 
@@ -291,12 +310,24 @@ namespace APTI_BOT
                 {
                     if (e.HttpCode == System.Net.HttpStatusCode.Forbidden)
                     {
-                        IUserMessage sent_error = await message.Author.SendMessageAsync("Ik heb niet de machtigingen om jouw naam te veranderen. Dit zal je zelf moeten doen. Als schrale troost mag je wel kiezen in welk jaar je zit :)");
+                        StringBuilder text = new StringBuilder();
+                        text.Append("Ik heb niet de machtigingen om jouw naam te veranderen, dit zal je zelf moeten doen.");
+                        text.Append(" Als schrale troost mag je wel kiezen in welk jaar je zit :)");
+                        IUserMessage sent_error = await message.Author.SendMessageAsync(text.ToString());
                         await sent_error.AddReactionsAsync(emojiJaren);
                     }
                     else
                     {
-                        IUserMessage sent_error_unknown = await message.Author.SendMessageAsync("Het instellen van je nickname is niet gelukt. Ik weet zelf niet wat er is fout gegaan. Stuur een berichtje naar @mixxamm met een screenshot van dit bericht.\nFoutcode: " + e.HttpCode + "\n\nJe kan voorlopig al wel je jaar kiezen door te klikken op één (of meerdere) emoji onder dit bericht. Als je vakken moet meenemen, dan kan je ook het vorige jaar kiezen. Als je geen kanalen meer wilt zien van een jaar dan kan je gewoon opnieuw op de emoji ervan klikken.");
+                        StringBuilder text = new StringBuilder();
+                        text.Append("Het instellen van je nickname is niet gelukt.");
+                        text.Append(" Ik weet zelf niet wat er is fout gegaan.");
+                        text.AppendLine($" Stuur een berichtje naar {BOT_CONTRIBUTORS} met een screenshot van dit bericht.");
+                        text.AppendLine($"Foutcode: {e.HttpCode}");
+                        text.AppendLine();
+                        text.Append("Je kan voorlopig al wel je jaar kiezen door te klikken op één (of meerdere) emoji onder dit bericht.");
+                        text.Append(" Als je vakken moet meenemen, dan kan je ook het vorige jaar kiezen.");
+                        text.Append(" Als je geen kanalen meer wilt zien van een jaar, dan kan je gewoon opnieuw op de emoji ervan klikken.");
+                        IUserMessage sent_error_unknown = await message.Author.SendMessageAsync(text.ToString());
                         await sent_error_unknown.AddReactionsAsync(emojiJaren);
                     }
                 }
@@ -366,7 +397,14 @@ namespace APTI_BOT
                     {
                         SocketGuildUser user = guild.GetUser(ulong.Parse(embeds.Current.Fields[0].Value));
                         await user.AddRoleAsync(guild.GetRole(config.StudentRolId));
-                        IUserMessage sent = await user.SendMessageAsync("Jouw inzending werd zojuist goedgekeurd. De volgende stap is je jaar kiezen door te klikken op één (of meerdere) emoji onder dit bericht. Als je vakken moet meenemen, dan kan je ook het vorige jaar kiezen. Als je geen kanalen meer wilt zien van een jaar dan kan je gewoon opnieuw op de emoji ervan klikken. Als je jaar niet verandert dan is de sessie van deze chat verlopen en moet je de sessie terug activeren door `!jaar` te typen.");
+
+                        StringBuilder text = new StringBuilder();
+                        text.Append("Jouw inzending werd zojuist goedgekeurd.");
+                        text.Append(" De volgende stap is je jaar kiezen door te klikken op één (of meerdere) emoji onder dit bericht.");
+                        text.Append(" Als je vakken moet meenemen, dan kan je ook het vorige jaar kiezen.");
+                        text.Append(" Als je geen kanalen meer wilt zien van een jaar, dan kan je gewoon opnieuw op de emoji ervan klikken.");
+                        text.Append(" Als je jaar niet verandert, dan is de sessie van deze chat verlopen en moet je de sessie terug activeren door `!jaar` te typen.");
+                        IUserMessage sent = await user.SendMessageAsync(text.ToString());
                         await sent.AddReactionsAsync(emojiJaren);
                     }
                     else if (reaction.Emote.ToString() == WEIGER_EMOJI.ToString() && !reaction.User.Value.IsBot)
@@ -483,12 +521,14 @@ namespace APTI_BOT
 
         private static int KrijgAantal(string bericht, int eindIndex)
         {
+            int result = 0;
+
             try
             {
                 bericht = bericht.Substring(0, eindIndex).TrimEnd(' ');
-                if (Regex.IsMatch(bericht[bericht.Length - 1].ToString(), @"[0-9]"))
+                if (Regex.IsMatch(bericht[^1].ToString(), @"[0-9]"))
                 {
-                    return ExtractAantal(bericht, eindIndex);
+                    result = ExtractAantal(bericht, eindIndex);
                 }
 
             }
@@ -497,7 +537,7 @@ namespace APTI_BOT
                 Console.WriteLine("Is out of range");
             }
 
-            return 0;
+            return result;
         }
 
         private static int ExtractAantal(string bericht, int eindIndex)
