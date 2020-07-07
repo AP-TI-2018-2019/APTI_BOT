@@ -200,7 +200,25 @@ namespace APTI_BOT
                     {
                         x.Nickname = naam;
                     });
-                    IUserMessage sent = await message.Author.SendMessageAsync($"Je nickname is ingesteld op {naam}. De volgende stap is verifiëren dat je een échte AP student bent. Om dit te doen stuur je een selfie met jouw AP studentenkaart. Zodra de verificatie is geslaagd krijg je hier een bevestiging.");
+                    System.Collections.Generic.IEnumerator<SocketRole> roles = guild.GetUser(message.Author.Id).Roles.GetEnumerator();
+                    bool student = false;
+                    while (roles.MoveNext())
+                    {
+                        if (roles.Current.Id == config.StudentRolId)
+                        {
+                            student = true;
+                        }
+                    }
+                    if (!student)
+                    {
+                        await message.Author.SendMessageAsync($"Je nickname is ingesteld op {naam}. De volgende stap is verifiëren dat je een échte AP student bent. Om dit te doen stuur je een selfie met jouw AP studentenkaart. Zodra de verificatie is geslaagd krijg je hier een bevestiging.");
+                    }
+                    else
+                    {
+                        IUserMessage sent = await message.Author.SendMessageAsync($"Je nickname is ingesteld op {naam}. De volgende stap is je jaar kiezen door te klikken op één (of meerdere) emoji onder dit bericht. Als je vakken moet meenemen, dan kan je ook het vorige jaar kiezen. Als je geen kanalen meer wilt zien van een jaar dan kan je gewoon opnieuw op de emoji ervan klikken. Als je jaar niet verandert dan is de sessie van deze chat verlopen en moet je de sessie terug activeren door `!jaar` te typen.");
+                        await sent.AddReactionsAsync(emoji);
+                    }
+
                 }
                 catch (Discord.Net.HttpException e)
                 {
