@@ -11,11 +11,17 @@ namespace APTI_BOT
 {
     internal class Program
     {
-        private const string HERINNERCOMMAND = "herrinner me";
+        private const string START_COMMAND = "!";
+
+        private const string HERINNER_COMMAND = "herrinner me";
+        private const string HELP_COMMAND = START_COMMAND + "help";
+        private const string AP_TI_COMMAND = START_COMMAND + "AP";
 
         private static readonly Emoji JAAR_1_EMOJI = new Emoji("🥇");
         private static readonly Emoji JAAR_2_EMOJI = new Emoji("🥈");
         private static readonly Emoji JAAR_3_EMOJI = new Emoji("🥉");
+
+        private static readonly Emoji PIN_EMOJI = new Emoji("📌");
 
         private static readonly Emoji ACCEPTEER_EMOJI = new Emoji("✅");
         private static readonly Emoji WEIGER_EMOJI = new Emoji("❌");
@@ -124,7 +130,7 @@ namespace APTI_BOT
             if (message.Content.Contains("herinner me") || message.Content.Contains("herinner"))
             {
                 await message.Channel.SendMessageAsync("oke");
-                string herinnering = message.Content.Substring(HERINNERCOMMAND.Length);
+                string herinnering = message.Content.Substring(HERINNER_COMMAND.Length);
                 int startHerinnering = herinnering.IndexOf(' ');
                 startHerinnering = herinnering.IndexOf(' ', startHerinnering + 1);
                 herinnering = herinnering.Substring(startHerinnering);
@@ -241,7 +247,7 @@ namespace APTI_BOT
                 {
                     if (e.HttpCode == System.Net.HttpStatusCode.Forbidden)
                     {
-                        IUserMessage sent_error = await message.Author.SendMessageAsync("Ik heb niet de machtigingen om jouw naam te veranderen, je zal dit zelf moeten doen. Als troost mag je wel kiezen in welk jaar je zit :)");
+                        IUserMessage sent_error = await message.Author.SendMessageAsync("Ik heb niet de machtigingen om jouw naam te veranderen. Dit zal je zelf moeten doen. Als schrale troost mag je wel kiezen in welk jaar je zit :)");
                         await sent_error.AddReactionsAsync(emojiJaren);
                     }
                     else
@@ -280,8 +286,15 @@ namespace APTI_BOT
                 }
                 else if (message.Content == "!help")
                 {
-                    StringBuilder text = new StringBuilder("!AP - TI!\n");
-                    await message.Channel.SendMessageAsync("!site - geeft link naar onze site\n!github | !gh - geeft link naar onze GitHub-repo\n!youtube | !yt - geeft link naar ons YouTube-kanaal\n!discord | !dc - geeft link naar onze Discord-uitnodigingspagina\n!date - geeft de datum van vandaag\n!time - geeft de huidige tijd\n!datetime - geeft de huidige datum en tijd");
+                    StringBuilder text = new StringBuilder("!AP - TI!");
+                    text.AppendLine("!site - geeft link naar onze site");
+                    text.AppendLine("!github | !gh - geeft link naar onze GitHub-repo");
+                    text.AppendLine("!youtube | !yt - geeft link naar ons YouTube-kanaal");
+                    text.AppendLine("!discord | !dc - geeft link naar onze Discord-uitnodigingspagina");
+                    text.AppendLine("!date - geeft de datum van vandaag");
+                    text.AppendLine("!time - geeft de huidige tijd");
+                    text.Append("!datetime - geeft de huidige datum en tijd");
+                    await message.Channel.SendMessageAsync(text.ToString());
                 }
             }
         }
@@ -304,14 +317,14 @@ namespace APTI_BOT
                 }
                 if (!student)
                 {
-                    if (reaction.Emote.ToString() == "✅" && !reaction.User.Value.IsBot)
+                    if (reaction.Emote.ToString() == ACCEPTEER_EMOJI.ToString() && !reaction.User.Value.IsBot)
                     {
                         SocketGuildUser user = guild.GetUser(ulong.Parse(embeds.Current.Fields[0].Value));
                         await user.AddRoleAsync(guild.GetRole(config.StudentRolId));
                         IUserMessage sent = await user.SendMessageAsync("Jouw inzending werd zojuist goedgekeurd. De volgende stap is je jaar kiezen door te klikken op één (of meerdere) emoji onder dit bericht. Als je vakken moet meenemen, dan kan je ook het vorige jaar kiezen. Als je geen kanalen meer wilt zien van een jaar dan kan je gewoon opnieuw op de emoji ervan klikken. Als je jaar niet verandert dan is de sessie van deze chat verlopen en moet je de sessie terug activeren door `!jaar` te typen.");
                         await sent.AddReactionsAsync(emojiJaren);
                     }
-                    else if (reaction.Emote.ToString() == "❌" && !reaction.User.Value.IsBot)
+                    else if (reaction.Emote.ToString() == WEIGER_EMOJI.ToString() && !reaction.User.Value.IsBot)
                     {
                         await guild.GetUser(ulong.Parse(embeds.Current.Fields[0].Value)).SendMessageAsync("Jouw inzending werd afgekeurd. Dien een nieuwe foto in.");
                     }
@@ -321,19 +334,19 @@ namespace APTI_BOT
             {
                 SocketUser user = _client.GetUser(reaction.UserId);
                 Console.WriteLine(user.ToString());
-                if (reaction.Emote.ToString() == "🥇")
+                if (reaction.Emote.ToString() == JAAR_1_EMOJI.ToString())
                 {
                     SocketRole role = guild.GetRole(config.Jaar1RolId);
                     Console.WriteLine(role.ToString());
                     await guild.GetUser(reaction.UserId).AddRoleAsync(role);
                 }
-                else if (reaction.Emote.ToString() == "🥈")
+                else if (reaction.Emote.ToString() == JAAR_2_EMOJI.ToString())
                 {
                     SocketRole role = guild.GetRole(config.Jaar2RolId);
                     Console.WriteLine(role.ToString());
                     await guild.GetUser(reaction.UserId).AddRoleAsync(role);
                 }
-                else if (reaction.Emote.ToString() == "🥉")
+                else if (reaction.Emote.ToString() == JAAR_3_EMOJI.ToString())
                 {
                     SocketRole role = guild.GetRole(config.Jaar3RolId);
                     Console.WriteLine(role.ToString());
@@ -342,7 +355,7 @@ namespace APTI_BOT
                 SocketRole studentRole = guild.GetRole(config.StudentRolId);
                 await guild.GetUser(reaction.UserId).AddRoleAsync(studentRole);
             }
-            else if (reaction.Emote.ToString() == "📌")
+            else if (reaction.Emote.ToString() == PIN_EMOJI.ToString())
             {
                 IUserMessage messageToPin = (IUserMessage)await channel.GetMessageAsync(message.Id);
                 if (!messageToPin.IsPinned)
@@ -381,24 +394,27 @@ namespace APTI_BOT
         {
             if (channel is IPrivateChannel)
             {
+                SocketRole role = null;
+
                 SocketUser user = _client.GetUser(reaction.UserId);
                 Console.WriteLine(user.ToString());
                 SocketGuild guild = _client.GetGuild(config.ServerId);
+
                 if (reaction.Emote.ToString() == JAAR_1_EMOJI.ToString())
                 {
-                    SocketRole role = guild.GetRole(config.Jaar1RolId);
-                    Console.WriteLine(role.ToString());
-                    await guild.GetUser(reaction.UserId).RemoveRoleAsync(role);
+                    role = guild.GetRole(config.Jaar1RolId);
                 }
                 else if (reaction.Emote.ToString() == JAAR_2_EMOJI.ToString())
                 {
-                    SocketRole role = guild.GetRole(config.Jaar2RolId);
-                    Console.WriteLine(role.ToString());
-                    await guild.GetUser(reaction.UserId).RemoveRoleAsync(role);
+                    role = guild.GetRole(config.Jaar2RolId);
                 }
                 else if (reaction.Emote.ToString() == JAAR_3_EMOJI.ToString())
                 {
-                    SocketRole role = guild.GetRole(config.Jaar3RolId);
+                    role = guild.GetRole(config.Jaar3RolId);
+                }
+
+                if (role != null)
+                {
                     Console.WriteLine(role.ToString());
                     await guild.GetUser(reaction.UserId).RemoveRoleAsync(role);
                 }
