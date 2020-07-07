@@ -3,6 +3,7 @@ using Discord.WebSocket;
 using Newtonsoft.Json;
 using System;
 using System.IO;
+using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 
@@ -11,14 +12,30 @@ namespace APTI_BOT
     internal class Program
     {
         private const string HERINNERCOMMAND = "herrinner me";
+
+        private static readonly Emoji JAAR_1_EMOJI = new Emoji("🥇");
+        private static readonly Emoji JAAR_2_EMOJI = new Emoji("🥈");
+        private static readonly Emoji JAAR_3_EMOJI = new Emoji("🥉");
+
+        private static readonly Emoji ACCEPTEER_EMOJI = new Emoji("✅");
+        private static readonly Emoji WEIGER_EMOJI = new Emoji("❌");
+
+        private static readonly Emoji[] emojiJaren = new Emoji[] { JAAR_1_EMOJI, JAAR_2_EMOJI, JAAR_3_EMOJI };
+        private static readonly Emoji[] emojiVerificatie = new Emoji[] { ACCEPTEER_EMOJI, WEIGER_EMOJI };
+
         private DiscordSocketClient _client;
-        Emoji[] emoji = new Emoji[] { new Emoji("🥇") , new Emoji("🥈"), new Emoji("🥉") };
+
         public static void Main(string[] args)
         {
             new Program().MainAsync().GetAwaiter().GetResult();
         }
 
         private Config config;
+
+        private static bool ValideerId(ulong id)
+        {
+            return id == 0;
+        }
 
         public async Task MainAsync()
         {
@@ -184,7 +201,6 @@ namespace APTI_BOT
                 }
                 Embed embed = embedBuilder.AddField("Id", message.Author.Id.ToString(), false).WithAuthor(message.Author.ToString(), message.Author.GetAvatarUrl()).WithColor(Color.Blue).WithFooter(footer => footer.WithText($"Account gecreëerd op: {message.Author.CreatedAt}"))
                        .Build();
-                Emoji[] emojiVerificatie = new Emoji[] { new Emoji("✅"), new Emoji("❌") };
                 Discord.Rest.RestUserMessage verification = await ((ISocketMessageChannel)_client.GetChannel(config.VerificatieId)).SendMessageAsync("", false, embed);
                 await verification.AddReactionsAsync(emojiVerificatie);
             }
@@ -217,7 +233,7 @@ namespace APTI_BOT
                     else
                     {
                         IUserMessage sent = await message.Author.SendMessageAsync($"Je nickname is ingesteld op {naam}. De volgende stap is je jaar kiezen door te klikken op één (of meerdere) emoji onder dit bericht. Als je vakken moet meenemen, dan kan je ook het vorige jaar kiezen. Als je geen kanalen meer wilt zien van een jaar dan kan je gewoon opnieuw op de emoji ervan klikken. Als je jaar niet verandert dan is de sessie van deze chat verlopen en moet je de sessie terug activeren door `!jaar` te typen.");
-                        await sent.AddReactionsAsync(emoji);
+                        await sent.AddReactionsAsync(emojiJaren);
                     }
 
                 }
@@ -226,19 +242,19 @@ namespace APTI_BOT
                     if (e.HttpCode == System.Net.HttpStatusCode.Forbidden)
                     {
                         IUserMessage sent_error = await message.Author.SendMessageAsync("Ik heb niet de machtigingen om jouw naam te veranderen, je zal dit zelf moeten doen. Als troost mag je wel kiezen in welk jaar je zit :)");
-                        await sent_error.AddReactionsAsync(emoji);
+                        await sent_error.AddReactionsAsync(emojiJaren);
                     }
                     else
                     {
                         IUserMessage sent_error_unknown = await message.Author.SendMessageAsync("Het instellen van je nickname is niet gelukt. Ik weet zelf niet wat er is fout gegaan. Stuur een berichtje naar @mixxamm met een screenshot van dit bericht.\nFoutcode: " + e.HttpCode + "\n\nJe kan voorlopig al wel je jaar kiezen door te klikken op één (of meerdere) emoji onder dit bericht. Als je vakken moet meenemen, dan kan je ook het vorige jaar kiezen. Als je geen kanalen meer wilt zien van een jaar dan kan je gewoon opnieuw op de emoji ervan klikken.");
-                        await sent_error_unknown.AddReactionsAsync(emoji);
+                        await sent_error_unknown.AddReactionsAsync(emojiJaren);
                     }
                 }
             }
             else if (message.Channel is IPrivateChannel && message.Source == MessageSource.User && message.Content == "!jaar")
             {
                 IUserMessage sent = await message.Author.SendMessageAsync("Kies je jaar door op één of meer van de emoji onder dit bericht te klikken.");
-                await sent.AddReactionsAsync(emoji);
+                await sent.AddReactionsAsync(emojiJaren);
             }
             else if (message.Source == MessageSource.User)
             {
@@ -264,7 +280,8 @@ namespace APTI_BOT
                 }
                 else if (message.Content == "!help")
                 {
-                    await message.Channel.SendMessageAsync("!AP - TI!\n!site - geeft link naar onze site\n!github | !gh - geeft link naar onze GitHub-repo\n!youtube | !yt - geeft link naar ons YouTube-kanaal\n!discord | !dc - geeft link naar onze Discord-uitnodigingspagina\n!date - geeft de datum van vandaag\n!time - geeft de huidige tijd\n!datetime - geeft de huidige datum en tijd");
+                    StringBuilder text = new StringBuilder("!AP - TI!\n");
+                    await message.Channel.SendMessageAsync("!site - geeft link naar onze site\n!github | !gh - geeft link naar onze GitHub-repo\n!youtube | !yt - geeft link naar ons YouTube-kanaal\n!discord | !dc - geeft link naar onze Discord-uitnodigingspagina\n!date - geeft de datum van vandaag\n!time - geeft de huidige tijd\n!datetime - geeft de huidige datum en tijd");
                 }
             }
         }
@@ -289,10 +306,10 @@ namespace APTI_BOT
                 {
                     if (reaction.Emote.ToString() == "✅" && !reaction.User.Value.IsBot)
                     {
-                        var user = guild.GetUser(ulong.Parse(embeds.Current.Fields[0].Value));
+                        SocketGuildUser user = guild.GetUser(ulong.Parse(embeds.Current.Fields[0].Value));
                         await user.AddRoleAsync(guild.GetRole(config.StudentRolId));
-                        var sent = await user.SendMessageAsync("Jouw inzending werd zojuist goedgekeurd. De volgende stap is je jaar kiezen door te klikken op één (of meerdere) emoji onder dit bericht. Als je vakken moet meenemen, dan kan je ook het vorige jaar kiezen. Als je geen kanalen meer wilt zien van een jaar dan kan je gewoon opnieuw op de emoji ervan klikken. Als je jaar niet verandert dan is de sessie van deze chat verlopen en moet je de sessie terug activeren door `!jaar` te typen.");
-                        await sent.AddReactionsAsync(emoji);
+                        IUserMessage sent = await user.SendMessageAsync("Jouw inzending werd zojuist goedgekeurd. De volgende stap is je jaar kiezen door te klikken op één (of meerdere) emoji onder dit bericht. Als je vakken moet meenemen, dan kan je ook het vorige jaar kiezen. Als je geen kanalen meer wilt zien van een jaar dan kan je gewoon opnieuw op de emoji ervan klikken. Als je jaar niet verandert dan is de sessie van deze chat verlopen en moet je de sessie terug activeren door `!jaar` te typen.");
+                        await sent.AddReactionsAsync(emojiJaren);
                     }
                     else if (reaction.Emote.ToString() == "❌" && !reaction.User.Value.IsBot)
                     {
@@ -367,19 +384,19 @@ namespace APTI_BOT
                 SocketUser user = _client.GetUser(reaction.UserId);
                 Console.WriteLine(user.ToString());
                 SocketGuild guild = _client.GetGuild(config.ServerId);
-                if (reaction.Emote.ToString() == "🥇")
+                if (reaction.Emote.ToString() == JAAR_1_EMOJI.ToString())
                 {
                     SocketRole role = guild.GetRole(config.Jaar1RolId);
                     Console.WriteLine(role.ToString());
                     await guild.GetUser(reaction.UserId).RemoveRoleAsync(role);
                 }
-                else if (reaction.Emote.ToString() == "🥈")
+                else if (reaction.Emote.ToString() == JAAR_2_EMOJI.ToString())
                 {
                     SocketRole role = guild.GetRole(config.Jaar2RolId);
                     Console.WriteLine(role.ToString());
                     await guild.GetUser(reaction.UserId).RemoveRoleAsync(role);
                 }
-                else if (reaction.Emote.ToString() == "🥉")
+                else if (reaction.Emote.ToString() == JAAR_3_EMOJI.ToString())
                 {
                     SocketRole role = guild.GetRole(config.Jaar3RolId);
                     Console.WriteLine(role.ToString());
@@ -413,13 +430,13 @@ namespace APTI_BOT
                     return ExtractAantal(bericht, eindIndex);
                 }
 
-                return 0;
             }
             catch (System.IndexOutOfRangeException)
             {
-                Console.WriteLine("test");
-                return 0;
+                Console.WriteLine("Is out of range");
             }
+
+            return 0;
         }
 
         private static int ExtractAantal(string bericht, int eindIndex)
