@@ -323,7 +323,8 @@ namespace APTI_BOT
                 }
                 else if (message.Content == HELP_COMMAND)
                 {
-                    StringBuilder text = new StringBuilder($"{AP_TI_COMMAND} - {AP_TI_RESPONSE}");
+                    StringBuilder text = new StringBuilder();
+                    text.AppendLine($"{AP_TI_COMMAND} - {AP_TI_RESPONSE}");
                     text.AppendLine($"{SITE_COMMAND} - geeft link naar onze site");
                     text.AppendLine($"{GITHUB_COMMAND_1} | {GITHUB_COMMAND_2} - geeft link naar onze GitHub-repo");
                     text.AppendLine($"{YOUTUBE_COMMAND_1} | {YOUTUBE_COMMAND_2} - geeft link naar ons YouTube-kanaal");
