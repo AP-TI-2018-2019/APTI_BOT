@@ -23,7 +23,7 @@ namespace APTI_BOT
         private const string DATETIME_COMMAND = COMMAND_CHARACTER + "datetime";
 
         private const string AP_TI_COMMAND = COMMAND_CHARACTER + "AP";
-        private const string AP_TI_RESPONSE = COMMAND_CHARACTER + "TI!";
+        private const string AP_TI_RESPONSE = "TI!";
 
         private const string SITE_COMMAND = COMMAND_CHARACTER + "site";
         private const string SITE_RESPONSE = "https://apti.be";
@@ -40,6 +40,7 @@ namespace APTI_BOT
         private const string DISCORD_COMMAND_2 = COMMAND_CHARACTER + "discord";
         private const string DISCORD_RESPONSE = "https://apti.be/discord";
 
+        private const string START_COMMAND = COMMAND_CHARACTER + "start";
         private const string HELP_COMMAND = COMMAND_CHARACTER + "help";
 
         /*
@@ -86,10 +87,10 @@ namespace APTI_BOT
             {
                 string result = System.IO.File.ReadAllText(@"config_apti.json");
                 config = JsonConvert.DeserializeObject<Config>(result);
-                if (config.Jaar1RolId == 0 || config.StudentRolId == 0 || config.VerificatieId == 0)
+                if (ValideerId(config.Jaar1RolId) ||  ValideerId(config.StudentRolId) || ValideerId(config.VerificatieId))
                 {
                     Console.WriteLine("Je configuratiebestand is verouderd. Om verder te gaan moet je nog extra gegevens invoeren.");
-                    if (config.Jaar1RolId == 0 || config.StudentRolId == 0)
+                    if (ValideerId(config.Jaar1RolId) || ValideerId(config.StudentRolId))
                     {
                         JaarRolInvoer(out ulong jaar1RolId, out ulong jaar2RolId, out ulong jaar3RolId, out ulong studentRolId);
                         config = new Config(config.DiscordToken, config.ServerId, config.PinLogId, config.VerificatieId, jaar1RolId, jaar2RolId, jaar3RolId, studentRolId);
@@ -214,7 +215,7 @@ namespace APTI_BOT
             {
                 await message.Channel.SendMessageAsync($"{DateTime.Now.ToLongDateString()} {DateTime.Now.ToLongTimeString()}");
             }
-            else if (message.Source == MessageSource.System || message.Content == "!start")
+            else if (message.Source == MessageSource.System || message.Content == START_COMMAND)
             {
                 if (message.Author.Id == _client.CurrentUser.Id)
                 {
@@ -222,7 +223,13 @@ namespace APTI_BOT
                 }
                 else
                 {
-                    await message.Author.SendMessageAsync("Hey, welkom in onze server! Ik ben de APTI-bot en mijn doel is om het toetreden tot de server eenvoudiger te maken. We zullen beginnen met je naam op de server in te stellen. Om dit te doen type je je naam en klas in het volgende formaat: {Naam} - {Jaar}TI{Groep} voorafgegeaan door `!naam`.\nBijvoorbeeld: `!naam Maxim - 1TIC`.");
+                    StringBuilder text = new StringBuilder();
+                    text.Append("Hey, welkom in onze server!");
+                    text.Append("Ik ben de APTI-bot en mijn doel is om het toetreden tot de server eenvoudiger te maken.");
+                    text.Append("We zullen beginnen met je naam op de server in te stellen.");
+                    text.AppendLine("Om dit te doen type je je naam en klas in het volgende formaat: {Naam} - {Jaar}TI{Groep} voorafgegeaan door `!naam`.");
+                    text.AppendLine("Bijvoorbeeld: `!naam Maxim - 1TIC`.");
+                    await message.Author.SendMessageAsync(text.ToString());
                 }
             }
             else if (message.Channel is IPrivateChannel && message.Source == MessageSource.User && message.Attachments.Count > 0)
