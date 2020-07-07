@@ -11,24 +11,61 @@ namespace APTI_BOT
 {
     internal class Program
     {
-        private const string START_COMMAND = "!";
+        /*
+         * Gebruiker commands
+         */
+        private const string COMMAND_CHARACTER = "!";
 
         private const string HERINNER_COMMAND = "herrinner me";
-        private const string HELP_COMMAND = START_COMMAND + "help";
-        private const string AP_TI_COMMAND = START_COMMAND + "AP";
 
+        private const string DATE_COMMAND = COMMAND_CHARACTER + "date";
+        private const string TIME_COMMAND = COMMAND_CHARACTER + "time";
+        private const string DATETIME_COMMAND = COMMAND_CHARACTER + "datetime";
+
+        private const string AP_TI_COMMAND = COMMAND_CHARACTER + "AP";
+        private const string AP_TI_RESPONSE = COMMAND_CHARACTER + "TI!";
+
+        private const string SITE_COMMAND = COMMAND_CHARACTER + "site";
+        private const string SITE_RESPONSE = "https://apti.be";
+
+        private const string GITHUB_COMMAND_1 = COMMAND_CHARACTER + "gh";
+        private const string GITHUB_COMMAND_2 = COMMAND_CHARACTER + "github";
+        private const string GITHUB_RESPONSE = "https://apti.be/github";
+
+        private const string YOUTUBE_COMMAND_1 = COMMAND_CHARACTER + "yt";
+        private const string YOUTUBE_COMMAND_2 = COMMAND_CHARACTER + "youtube";
+        private const string YOUTUBE_RESPONSE = "https://apti.be/youtube";
+
+        private const string DISCORD_COMMAND_1 = COMMAND_CHARACTER + "dc";
+        private const string DISCORD_COMMAND_2 = COMMAND_CHARACTER + "discord";
+        private const string DISCORD_RESPONSE = "https://apti.be/discord";
+
+        private const string HELP_COMMAND = COMMAND_CHARACTER + "help";
+
+        /*
+         *  Jaar related
+         */
         private static readonly Emoji JAAR_1_EMOJI = new Emoji("🥇");
         private static readonly Emoji JAAR_2_EMOJI = new Emoji("🥈");
         private static readonly Emoji JAAR_3_EMOJI = new Emoji("🥉");
 
-        private static readonly Emoji PIN_EMOJI = new Emoji("📌");
-
+        /*
+         * Actie related
+         */
         private static readonly Emoji ACCEPTEER_EMOJI = new Emoji("✅");
         private static readonly Emoji WEIGER_EMOJI = new Emoji("❌");
+        private static readonly Emoji PIN_EMOJI = new Emoji("📌");
 
+        /*
+         * Emoji arrays
+         */
         private static readonly Emoji[] emojiJaren = new Emoji[] { JAAR_1_EMOJI, JAAR_2_EMOJI, JAAR_3_EMOJI };
         private static readonly Emoji[] emojiVerificatie = new Emoji[] { ACCEPTEER_EMOJI, WEIGER_EMOJI };
 
+
+        /*
+         * Client
+         */
         private DiscordSocketClient _client;
 
         public static void Main(string[] args)
@@ -165,15 +202,15 @@ namespace APTI_BOT
             {
                 await _client.SetGameAsync("Live op YouTube", "https://www.youtube.com/channel/UCcZPpgyhpB-o1Q5fXxbN5_w", ActivityType.Streaming);
             }*/
-            else if (message.Content == "!date")
+            else if (message.Content == DATE_COMMAND)
             {
                 await message.Channel.SendMessageAsync(DateTime.Today.ToLongDateString());
             }
-            else if (message.Content == "!time")
+            else if (message.Content == TIME_COMMAND)
             {
                 await message.Channel.SendMessageAsync(DateTime.Now.ToLongTimeString());
             }
-            else if (message.Content == "!datetime")
+            else if (message.Content == DATETIME_COMMAND)
             {
                 await message.Channel.SendMessageAsync($"{DateTime.Now.ToLongDateString()} {DateTime.Now.ToLongTimeString()}");
             }
@@ -264,36 +301,36 @@ namespace APTI_BOT
             }
             else if (message.Source == MessageSource.User)
             {
-                if (message.Content.Contains("!AP"))
+                if (message.Content.Contains(AP_TI_COMMAND))
                 {
-                    await message.Channel.SendMessageAsync("TI!");
+                    await message.Channel.SendMessageAsync(AP_TI_RESPONSE);
                 }
-                else if (message.Content == "!site")
+                else if (message.Content == SITE_COMMAND)
                 {
-                    await message.Channel.SendMessageAsync("https://apti.be");
+                    await message.Channel.SendMessageAsync(SITE_RESPONSE);
                 }
-                else if (message.Content == "!github" || message.Content == "!gh")
+                else if (message.Content == GITHUB_COMMAND_1 || message.Content == GITHUB_COMMAND_2)
                 {
-                    await message.Channel.SendMessageAsync("https://apti.be/github");
+                    await message.Channel.SendMessageAsync(GITHUB_RESPONSE);
                 }
-                else if (message.Content == "!youtube" || message.Content == "!yt")
+                else if (message.Content == YOUTUBE_COMMAND_1 || message.Content == YOUTUBE_COMMAND_2)
                 {
-                    await message.Channel.SendMessageAsync("https://apti.be/youtube");
+                    await message.Channel.SendMessageAsync(YOUTUBE_RESPONSE);
                 }
-                else if (message.Content == "!discord" || message.Content == "!dc")
+                else if (message.Content == DISCORD_COMMAND_1 || message.Content == DISCORD_COMMAND_2)
                 {
-                    await message.Channel.SendMessageAsync("https://apti.be/discord");
+                    await message.Channel.SendMessageAsync(DISCORD_RESPONSE);
                 }
-                else if (message.Content == "!help")
+                else if (message.Content == HELP_COMMAND)
                 {
-                    StringBuilder text = new StringBuilder("!AP - TI!");
-                    text.AppendLine("!site - geeft link naar onze site");
-                    text.AppendLine("!github | !gh - geeft link naar onze GitHub-repo");
-                    text.AppendLine("!youtube | !yt - geeft link naar ons YouTube-kanaal");
-                    text.AppendLine("!discord | !dc - geeft link naar onze Discord-uitnodigingspagina");
-                    text.AppendLine("!date - geeft de datum van vandaag");
-                    text.AppendLine("!time - geeft de huidige tijd");
-                    text.Append("!datetime - geeft de huidige datum en tijd");
+                    StringBuilder text = new StringBuilder($"{AP_TI_COMMAND} - {AP_TI_RESPONSE}");
+                    text.AppendLine($"{SITE_COMMAND} - geeft link naar onze site");
+                    text.AppendLine($"{GITHUB_COMMAND_1} | {GITHUB_COMMAND_2} - geeft link naar onze GitHub-repo");
+                    text.AppendLine($"{YOUTUBE_COMMAND_1} | {YOUTUBE_COMMAND_2} - geeft link naar ons YouTube-kanaal");
+                    text.AppendLine($"{DISCORD_COMMAND_1} | {DISCORD_COMMAND_2} - geeft link naar onze Discord-uitnodigingspagina");
+                    text.AppendLine($"{DATE_COMMAND} - geeft de datum van vandaag");
+                    text.AppendLine($"{TIME_COMMAND} - geeft de huidige tijd");
+                    text.Append($"{DATETIME_COMMAND} - geeft de huidige datum en tijd");
                     await message.Channel.SendMessageAsync(text.ToString());
                 }
             }
@@ -447,7 +484,7 @@ namespace APTI_BOT
                 }
 
             }
-            catch (System.IndexOutOfRangeException)
+            catch (IndexOutOfRangeException)
             {
                 Console.WriteLine("Is out of range");
             }
