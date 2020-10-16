@@ -108,11 +108,12 @@ namespace APTI_BOT.Modules
         {
             if (Context.IsPrivate)
             {
-                if (!Regex.Match(message, "[A-Z][a-z]+ - [1-3]TI[A-Z]*").Success)
+                if (!Regex.Match(message, "[a-z]+ - [1-3]TI[A-Z]*").Success)
                 {
                     await ReplyAsync("Je hebt je naam in een niet-geldig formaat ingevoerd. Gelieve het formaat te volgen.", false, null);
                     return;
                 }
+                message = message.Substring(0, 1).ToUpper() + message.Substring(1);
                 SocketGuild guild = _client.GetGuild(ulong.Parse(_config["ids:server"]));
                 SocketGuildUser user = guild.GetUser(Context.User.Id);
                 try
