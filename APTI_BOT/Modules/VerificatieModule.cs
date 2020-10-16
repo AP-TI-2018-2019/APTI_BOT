@@ -41,6 +41,10 @@ namespace APTI_BOT.Modules
         private readonly IConfigurationRoot _config;
         private readonly DiscordSocketClient _client;
 
+        private readonly SocketGuild guild;
+        private readonly SocketRole studentRole;
+        private readonly SocketRole notVerifiedRole;
+
         public VerificatieModule(IConfigurationRoot config, DiscordSocketClient client)
         {
             _config = config;
@@ -49,6 +53,10 @@ namespace APTI_BOT.Modules
             _client.ReactionAdded += VerifyIdAsync;
             _client.ReactionAdded += AddYearAsync;
             _client.MessageReceived += CreateEmbedInVerificationChannelAsync;
+
+            guild = _client.GetGuild(ulong.Parse(_config["ids:server"]));
+            studentRole = guild.GetRole(ulong.Parse(_config["ids:studentrol"]));
+            notVerifiedRole = guild.GetRole(ulong.Parse(_config["ids:nietgeverifieerdrol"]));
         }
 
         [Command("start")]
@@ -63,10 +71,8 @@ namespace APTI_BOT.Modules
             text.Append("Bijvoorbeeld: `!naam Maxim - 1TIC`.");
             await Context.User.SendMessageAsync(text.ToString());
 
-            SocketGuild guild = _client.GetGuild(ulong.Parse(_config["ids:server"]));
-            if (!guild.GetUser(Context.User.Id).Roles.Contains(guild.GetRole(ulong.Parse(_config["ids:studentrol"]))))
+            if (!guild.GetUser(Context.User.Id).Roles.Contains(studentRole))
             {
-                SocketRole notVerifiedRole = guild.GetRole(ulong.Parse(_config["ids:nietgeverifieerdrol"]));
                 await guild.GetUser(Context.User.Id).AddRoleAsync(notVerifiedRole);
             }
         }
@@ -114,7 +120,6 @@ namespace APTI_BOT.Modules
                     return;
                 }
                 message = message.Substring(0, 1).ToUpper() + message.Substring(1);
-                SocketGuild guild = _client.GetGuild(ulong.Parse(_config["ids:server"]));
                 SocketGuildUser user = guild.GetUser(Context.User.Id);
                 try
                 {
@@ -126,7 +131,7 @@ namespace APTI_BOT.Modules
                     bool student = false;
                     while (roles.MoveNext())
                     {
-                        if (roles.Current.Id == ulong.Parse(_config["ids:studentrol"]))
+                        if (roles.Current.Id == studentRole.Id)
                         {
                             student = true;
                         }
@@ -204,8 +209,6 @@ namespace APTI_BOT.Modules
             {
                 SocketRole role;
 
-                SocketGuild guild = _client.GetGuild(ulong.Parse(_config["ids:server"]));
-
                 if (reaction.Emote.Equals(JAAR_1_EMOJI))
                 {
                     role = guild.GetRole(ulong.Parse(_config["ids:jaar1rol"]));
@@ -239,7 +242,6 @@ namespace APTI_BOT.Modules
             }
 
             System.Console.WriteLine("VerifyIdAsync");
-            SocketGuild guild = _client.GetGuild(ulong.Parse(_config["ids:server"]));
 
             if (reaction.Channel.Id == ulong.Parse(_config["ids:verificatielog"]))
             {
@@ -249,7 +251,7 @@ namespace APTI_BOT.Modules
                 bool student = false;
                 while (roles.MoveNext())
                 {
-                    if (roles.Current.Id == ulong.Parse(_config["ids:studentrol"]))
+                    if (roles.Current.Id == studentRole.Id)
                     {
                         student = true;
                     }
@@ -259,7 +261,7 @@ namespace APTI_BOT.Modules
                     if (reaction.Emote.ToString().Equals(ACCEPTEER_EMOJI.ToString()) && !reaction.User.Value.IsBot && channel is IPrivateChannel)
                     {
                         SocketGuildUser user = guild.GetUser(ulong.Parse(embeds.Current.Fields[0].Value));
-                        await user.AddRoleAsync(guild.GetRole(ulong.Parse(_config["ids:studentrol"])));
+                        await user.AddRoleAsync(studentRole);
 
                         StringBuilder text = new StringBuilder();
                         text.Append("Jouw inzending werd zojuist goedgekeurd.");
@@ -267,8 +269,6 @@ namespace APTI_BOT.Modules
                         text.Append(" Als je vakken moet meenemen, dan kan je ook het vorige jaar kiezen.");
                         text.Append(" Als je geen kanalen meer wilt zien van een jaar, dan kan je gewoon opnieuw op de emoji ervan klikken.");
                         text.Append(" Als je jaar niet verandert, dan is de sessie van deze chat verlopen en moet je de sessie terug activeren door `!jaar` te typen.");
-                        SocketRole studentRole = guild.GetRole(ulong.Parse(_config["ids:studentrol"]));
-                        SocketRole notVerifiedRole = guild.GetRole(ulong.Parse(_config["ids:nietgeverifieerdrol"]));
                         await guild.GetUser(reaction.UserId).RemoveRoleAsync(notVerifiedRole);
                         await guild.GetUser(reaction.UserId).AddRoleAsync(studentRole);
                         IUserMessage sent = await user.SendMessageAsync(text.ToString());
@@ -292,7 +292,6 @@ namespace APTI_BOT.Modules
             }
 
             System.Console.WriteLine("AddYearAsync");
-            SocketGuild guild = _client.GetGuild(ulong.Parse(_config["ids:server"]));
 
             if (channel is IPrivateChannel && !reaction.User.Value.IsBot)
             {
