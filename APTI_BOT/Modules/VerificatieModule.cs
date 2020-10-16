@@ -200,7 +200,7 @@ namespace APTI_BOT.Modules
             }
 
             System.Console.WriteLine("RemoveYearAsync");
-            if (Context.IsPrivate)
+            if (channel is IPrivateChannel)
             {
                 SocketRole role;
 
@@ -226,7 +226,7 @@ namespace APTI_BOT.Modules
 
                 if (role != null)
                 {
-                    await guild.GetUser(Context.User.Id).RemoveRoleAsync(role);
+                    await guild.GetUser(reaction.UserId).RemoveRoleAsync(role);
                 }
             }
         }
