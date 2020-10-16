@@ -256,7 +256,7 @@ namespace APTI_BOT.Modules
                 }
                 if (!student)
                 {
-                    if (reaction.Emote.ToString().Equals(ACCEPTEER_EMOJI.ToString()) && !reaction.User.Value.IsBot)
+                    if (reaction.Emote.ToString().Equals(ACCEPTEER_EMOJI.ToString()) && !reaction.User.Value.IsBot && channel is IPrivateChannel)
                     {
                         SocketGuildUser user = guild.GetUser(ulong.Parse(embeds.Current.Fields[0].Value));
                         await user.AddRoleAsync(guild.GetRole(ulong.Parse(_config["ids:studentrol"])));
@@ -274,12 +274,14 @@ namespace APTI_BOT.Modules
                         IUserMessage sent = await user.SendMessageAsync(text.ToString());
                         await sent.AddReactionsAsync(emojiJaren);
                     }
-                    else if (reaction.Emote.ToString().Equals(WEIGER_EMOJI.ToString()) && !reaction.User.Value.IsBot)
+                    else if (reaction.Emote.ToString().Equals(WEIGER_EMOJI.ToString()) && !reaction.User.Value.IsBot && channel is IPrivateChannel)
                     {
                         await guild.GetUser(ulong.Parse(embeds.Current.Fields[0].Value)).SendMessageAsync("Jouw inzending werd afgekeurd. Dien een nieuwe foto in.");
                     }
                 }
             }
+
+            return;
         }
 
         public async Task AddYearAsync(Cacheable<IUserMessage, ulong> message, ISocketMessageChannel channel, SocketReaction reaction)
