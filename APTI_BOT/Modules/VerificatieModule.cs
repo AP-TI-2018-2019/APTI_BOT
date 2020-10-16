@@ -62,6 +62,11 @@ namespace APTI_BOT.Modules
             text.AppendLine(" Om dit te doen type je je naam en klas in het volgende formaat: `{Naam} - {Jaar}TI{Groep}` voorafgegeaan door `!naam`.");
             text.Append("Bijvoorbeeld: `!naam Maxim - 1TIC`.");
             await Context.User.SendMessageAsync(text.ToString());
+
+
+            SocketGuild guild = _client.GetGuild(ulong.Parse(_config["ids:server"]));
+            SocketRole notVerifiedRole = guild.GetRole(ulong.Parse(_config["ids:nietgeverifieerdrol"]));
+            await guild.GetUser(Context.User.Id).AddRoleAsync(notVerifiedRole);
         }
 
         public async Task CreateEmbedInVerificationChannelAsync(SocketMessage message)
@@ -301,13 +306,6 @@ namespace APTI_BOT.Modules
                     SocketRole role = guild.GetRole(ulong.Parse(_config["ids:jaar3rol"]));
                     await guild.GetUser(reaction.UserId).AddRoleAsync(role);
                 }
-
-                if (!guild.GetUser(Context.User.Id).Roles.Contains(guild.GetRole(ulong.Parse(_config["ids:studentrol"]))))
-                {
-                    SocketRole notVerifiedRole = guild.GetRole(ulong.Parse(_config["ids:nietgeverifieerdrol"]));
-                    await guild.GetUser(reaction.UserId).AddRoleAsync(notVerifiedRole);
-                }
-
             }
         }
     }
