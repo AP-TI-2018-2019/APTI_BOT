@@ -24,15 +24,15 @@ namespace APTI_BOT.Modules
         [Summary("Vraag de URL van onze YouTube channel op.")]
         public async Task YouTubeAsync()
         {
-            await ReplyAsync($"{APTI_BASE_URL}/youtube", false, null);
+            await ReplyAsync($"{APTI_BASE_URL}youtube", false, null);
         }
 
         [Command("gt")]
-        [Alias("github")]
+        [Alias("github", "gh", "git")]
         [Summary("Vraag de URL van onze GitHub Repository op.")]
         public async Task GitHubAsync()
         {
-            await ReplyAsync($"{APTI_BASE_URL}/github", false, null);
+            await ReplyAsync($"{APTI_BASE_URL}github", false, null);
         }
 
         [Command("dc")]
@@ -40,7 +40,7 @@ namespace APTI_BOT.Modules
         [Summary("Vraag de uitnodigingspagina van onze server op.")]
         public async Task DiscordAsync()
         {
-            await ReplyAsync($"{APTI_BASE_URL}/discord", false, null);
+            await ReplyAsync($"{APTI_BASE_URL}discord", false, null);
         }
     }
 }
