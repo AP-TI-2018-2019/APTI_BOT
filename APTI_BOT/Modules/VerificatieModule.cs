@@ -3,6 +3,7 @@ using Discord.Commands;
 using Discord.Rest;
 using Discord.WebSocket;
 using Microsoft.Extensions.Configuration;
+using System;
 using System.Linq;
 using System.Text;
 using System.Text.RegularExpressions;
@@ -79,8 +80,7 @@ namespace APTI_BOT.Modules
 
         public async Task CreateEmbedInVerificationChannelAsync(SocketMessage message)
         {
-            System.Console.WriteLine("Embed check");
-            if (message.Embeds.Count > 0)
+            if (message.Author.IsBot)
             {
                 return;
             }
@@ -101,8 +101,13 @@ namespace APTI_BOT.Modules
                         embedBuilder = embedBuilder.WithImageUrl(attachment.Url);
                     }
                 }
-                Embed embed = embedBuilder.AddField("Id", message.Author.Id.ToString(), false).WithAuthor(message.Author.ToString(), message.Author.GetAvatarUrl()).WithColor(Color.Blue).WithFooter(footer => footer.WithText($"Account gecreëerd op: {message.Author.CreatedAt}"))
-                       .Build();
+                Embed embed = embedBuilder
+                    .AddField("Id", message.Author.Id.ToString(), false)
+                    .WithAuthor(message.Author.ToString(), message.Author.GetAvatarUrl())
+                    .WithColor(Color.Blue)
+                    .WithFooter(footer => footer.WithText($"Account gecreëerd op: {message.Author.CreatedAt}"))
+                    .WithTimestamp(DateTime.Now.ToLocalTime())
+                     .Build();
                 RestUserMessage verification = await ((ISocketMessageChannel)_client.GetChannel(ulong.Parse(_config["ids:verificatielog"]))).SendMessageAsync("", false, embed);
                 await verification.AddReactionsAsync(emojiVerificatie);
             }
@@ -245,18 +250,11 @@ namespace APTI_BOT.Modules
 
             if (reaction.Channel.Id == ulong.Parse(_config["ids:verificatielog"]))
             {
-                System.Collections.Generic.IEnumerator<IEmbed> embeds = message.DownloadAsync().Result.Embeds.GetEnumerator();
+                var embeds = message.DownloadAsync().Result.Embeds.GetEnumerator();
                 embeds.MoveNext();
-                System.Collections.Generic.IEnumerator<SocketRole> roles = guild.GetUser(ulong.Parse(embeds.Current.Fields[0].Value)).Roles.GetEnumerator();
-                bool student = false;
-                while (roles.MoveNext())
-                {
-                    if (roles.Current.Id == studentRole.Id)
-                    {
-                        student = true;
-                    }
-                }
-                if (!student)
+                bool isStudent = guild.GetUser(ulong.Parse(embeds.Current.Fields[0].Value)).Roles.Contains(studentRole);
+                bool isNietVerificeerd = guild.GetUser(ulong.Parse(embeds.Current.Fields[0].Value)).Roles.Contains(notVerifiedRole);
+                if (!isStudent && isNietVerificeerd)
                 {
                     if (reaction.Emote.ToString().Equals(ACCEPTEER_EMOJI.ToString()) && !reaction.User.Value.IsBot && channel is IPrivateChannel)
                     {
