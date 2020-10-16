@@ -1,6 +1,5 @@
 ﻿using Discord.Commands;
 using Discord.WebSocket;
-using Microsoft.Extensions.Configuration;
 using System;
 using System.Threading.Tasks;
 using System.Timers;
@@ -10,22 +9,14 @@ namespace APTI_BOT.Modules
     [Name("Standaard commando's")]
     public class StandardModule : ModuleBase<SocketCommandContext>
     {
-        private readonly CommandService _service;
-        private readonly IConfigurationRoot _config;
-        private readonly string _prefix;
-
-        public StandardModule(CommandService service, IConfigurationRoot config)
+        public StandardModule()
         {
-            _service = service;
-            _config = config;
-
-            _prefix = _config["prefix"];
         }
 
         [Command("herinner mij om")]
         [Alias("herinner me om", "herinner om")]
         [Summary("Laat de bot je iets herinneren door een bericht en een datum mee te geven, bv. '!herinner mij om de planten buiten te zetten op 15/10/2020'.")]
-        public async Task HerinnerAsync([Remainder] string bericht)
+        public async Task RemindAsync([Remainder] string bericht)
         {
             string[] splitsing = bericht.Split("op");
             string boodschap = splitsing[0];
@@ -52,7 +43,7 @@ namespace APTI_BOT.Modules
         [Command("date")]
         [Alias("datum")]
         [Summary("Vraag de datum van vandaag op.")]
-        public async Task VraagDatumOpAsync()
+        public async Task AskDateAsync()
         {
             await ReplyAsync($"{DateTime.Today.ToShortDateString()}", false, null);
         }
@@ -60,16 +51,30 @@ namespace APTI_BOT.Modules
         [Command("time")]
         [Alias("tijd")]
         [Summary("Vraag de tijd van vandaag op.")]
-        public async Task VraagTijdOpAsync()
+        public async Task AskTimeAsync()
         {
             await ReplyAsync($"{DateTime.Now.ToShortTimeString()}", false, null);
         }
 
         [Command("datetime")]
         [Summary("Vraag de datum en tijd van vandaag op.")]
-        public async Task VraagDateTimeOpAsync()
+        public async Task AskDateTimeAsync()
         {
             await ReplyAsync($"{DateTime.Now.ToShortTimeString()}", false, null);
+        }
+
+        [Command("ap")]
+        [Summary("Ping Pong Effect")]
+        public async Task ApTiAsync()
+        {
+            await ReplyAsync($"ti!", false, null);
+        }
+
+        [Command("ping")]
+        [Summary("Ping Pong Effect")]
+        public async Task PingPongAsync()
+        {
+            await ReplyAsync($"pong!", false, null);
         }
     }
 }

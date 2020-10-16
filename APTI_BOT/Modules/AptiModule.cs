@@ -1,5 +1,4 @@
 ﻿using Discord.Commands;
-using Microsoft.Extensions.Configuration;
 using System.Threading.Tasks;
 
 namespace APTI_BOT.Modules
@@ -9,16 +8,8 @@ namespace APTI_BOT.Modules
     {
         private const string APTI_BASE_URL = @"https://apti.be/";
 
-        private readonly CommandService _service;
-        private readonly IConfigurationRoot _config;
-        private readonly string _prefix;
-
-        public AptiModule(CommandService service, IConfigurationRoot config)
+        public AptiModule()
         {
-            _service = service;
-            _config = config;
-
-            _prefix = _config["prefix"];
         }
 
         [Command("apti")]
