@@ -1,6 +1,5 @@
 ﻿using Discord;
 using Discord.Commands;
-using Discord.Rest;
 using Discord.WebSocket;
 using Microsoft.Extensions.Configuration;
 using System;
@@ -74,29 +73,15 @@ namespace APTI_BOT.Modules
             }
         }
 
-        public async Task CreateEmbedInVerificationChannelAsync(SocketMessage message)
+        private async Task CreateEmbedInVerificationChannelAsync(SocketMessage message)
         {
-            if (message.Author.IsBot)
+            if (message.Channel is IPrivateChannel && message.Source == MessageSource.User && message.Attachments.Count > 0 && !message.Author.IsBot)
             {
-                return;
-            }
-
-            if (message.Channel is IPrivateChannel && message.Source == MessageSource.User && message.Attachments.Count > 0)
-            {
-                // Verificatie ding
+                Console.WriteLine("I'm making another embed!");
                 EmbedBuilder embedBuilder = new EmbedBuilder().WithTitle("Verificatie student");
 
-                foreach (IAttachment attachment in message.Attachments)
-                {
-                    if (attachment.IsSpoiler())
-                    {
-                        embedBuilder = embedBuilder.AddField("Foto", $"||{attachment.Url}||", false);
-                    }
-                    else
-                    {
-                        embedBuilder = embedBuilder.WithImageUrl(attachment.Url);
-                    }
-                }
+                embedBuilder = embedBuilder.WithImageUrl(message.Attachments.FirstOrDefault().Url);
+
                 Embed embed = embedBuilder
                     .AddField("Id", message.Author.Id.ToString(), false)
                     .WithAuthor(message.Author.ToString(), message.Author.GetAvatarUrl())
@@ -104,12 +89,13 @@ namespace APTI_BOT.Modules
                     .WithFooter(footer => footer.WithText($"Account gecreëerd op: {message.Author.CreatedAt}"))
                     .WithTimestamp(DateTime.Now.ToLocalTime())
                     .Build();
-                Console.WriteLine("I'm making another embed!");
 
                 SocketGuild _guild = _client.GetGuild(ulong.Parse(_config["ids:server"]));
-                ISocketMessageChannel verificationLogChannel = ((ISocketMessageChannel)_guild.GetChannel(ulong.Parse(_config["ids:verificatielog"])));
-                RestUserMessage verificationEmbed = await verificationLogChannel.SendMessageAsync("", false, embed);
-                await verificationEmbed.AddReactionsAsync(emojiVerificatie);
+                ISocketMessageChannel verificationLogChannel = (ISocketMessageChannel)_guild.GetChannel(ulong.Parse(_config["ids:verificatielog"]));
+
+                IEnumerable<IMessage> messages = await verificationLogChannel.GetMessagesAsync(30).FlattenAsync();
+
+                await verificationLogChannel.SendMessageAsync("", false, embed).Result.AddReactionsAsync(emojiVerificatie);
             }
         }
 
@@ -117,83 +103,82 @@ namespace APTI_BOT.Modules
         [Summary("Stel je bijnaam van de server in.")]
         public async Task ChangeNameAsync([Remainder] string message)
         {
-            if (Context.User.IsBot)
-            {
-                return;
-            }
-
-            if (Context.IsPrivate)
+            if (Context.IsPrivate && !Context.User.IsBot)
             {
                 SocketGuild _guild = _client.GetGuild(ulong.Parse(_config["ids:server"]));
                 SocketRole _studentRole = _guild.GetRole(ulong.Parse(_config["ids:studentrol"]));
                 SocketRole _notVerifiedRole = _guild.GetRole(ulong.Parse(_config["ids:nietgeverifieerdrol"]));
-
+                bool isInvalidName = false;
                 if (!Regex.Match(message, "[a-z]+ - [1-3]TI[A-Z]*").Success)
                 {
                     await ReplyAsync("Je hebt je naam in een niet-geldig formaat ingevoerd. Gelieve het formaat te volgen.", false, null);
-                    return;
+                    isInvalidName = true;
                 }
-                message = message.Substring(0, 1).ToUpper() + message.Substring(1);
-                SocketGuildUser user = _guild.GetUser(Context.User.Id);
-                try
-                {
-                    await user.ModifyAsync(x =>
-                    {
-                        x.Nickname = message;
-                    });
-                    System.Collections.Generic.IEnumerator<SocketRole> roles = _guild.GetUser(Context.User.Id).Roles.GetEnumerator();
-                    bool student = false;
-                    while (roles.MoveNext())
-                    {
-                        if (roles.Current.Id == _studentRole.Id)
-                        {
-                            student = true;
-                        }
-                    }
-                    StringBuilder text = new StringBuilder();
-                    text.Append($"Je nickname is ingesteld op {message}.");
-                    if (!student)
-                    {
-                        text.Append(" De volgende stap is verifiëren dat je een échte AP student bent.");
-                        text.Append(" Om dit te doen stuur je een selfie met jouw AP studentenkaart.");
-                        text.Append(" Zodra de verificatie is geslaagd, krijg je hier een bevestiging.");
-                        await ReplyAsync(text.ToString());
-                        await Context.User.SendFileAsync(@"../../../Assets/studentenkaart.png", "Zorg ervoor dat jouw gezicht goed zichtbaar is en de tekst van je studentenkaart leesbaar is.");
-                    }
-                    else
-                    {
-                        text.Append(" De volgende stap is je jaar kiezen door te klikken op één (of meerdere) emoji onder dit bericht.");
-                        text.Append(" Als je vakken moet meenemen, dan kan je ook het vorige jaar kiezen.");
-                        text.Append(" Als je geen kanalen meer wilt zien van een jaar, dan kan je gewoon opnieuw op de emoji ervan klikken.");
-                        text.Append(" Als je jaar niet verandert, dan is de sessie van deze chat verlopen en moet je de sessie terug activeren door `!jaar` te typen.");
-                        IUserMessage sent = await ReplyAsync(text.ToString());
-                        await sent.AddReactionsAsync(emojiJaren);
-                    }
 
-                }
-                catch (Discord.Net.HttpException e)
+                if (!isInvalidName)
                 {
-                    if (e.HttpCode == System.Net.HttpStatusCode.Forbidden)
+                    message = message.Substring(0, 1).ToUpper() + message.Substring(1);
+                    SocketGuildUser user = _guild.GetUser(Context.User.Id);
+                    try
                     {
+                        await user.ModifyAsync(x =>
+                        {
+                            x.Nickname = message;
+                        });
+                        System.Collections.Generic.IEnumerator<SocketRole> roles = _guild.GetUser(Context.User.Id).Roles.GetEnumerator();
+                        bool student = false;
+                        while (roles.MoveNext())
+                        {
+                            if (roles.Current.Id == _studentRole.Id)
+                            {
+                                student = true;
+                            }
+                        }
                         StringBuilder text = new StringBuilder();
-                        text.Append("Ik heb niet de machtigingen om jouw naam te veranderen, dit zal je zelf moeten doen.");
-                        text.Append(" Als schrale troost mag je wel kiezen in welk jaar je zit :)");
-                        IUserMessage sent_error = await ReplyAsync(text.ToString());
-                        await sent_error.AddReactionsAsync(emojiJaren);
+                        text.Append($"Je nickname is ingesteld op {message}.");
+                        if (!student)
+                        {
+                            text.Append(" De volgende stap is verifiëren dat je een échte AP student bent.");
+                            text.Append(" Om dit te doen stuur je een selfie met jouw AP studentenkaart.");
+                            text.Append(" Zodra de verificatie is geslaagd, krijg je hier een bevestiging.");
+                            await ReplyAsync(text.ToString());
+                            await Context.User.SendFileAsync(@"../../../Assets/studentenkaart.png", "Zorg ervoor dat jouw gezicht goed zichtbaar is en de tekst van je studentenkaart leesbaar is.");
+                        }
+                        else
+                        {
+                            text.Append(" De volgende stap is je jaar kiezen door te klikken op één (of meerdere) emoji onder dit bericht.");
+                            text.Append(" Als je vakken moet meenemen, dan kan je ook het vorige jaar kiezen.");
+                            text.Append(" Als je geen kanalen meer wilt zien van een jaar, dan kan je gewoon opnieuw op de emoji ervan klikken.");
+                            text.Append(" Als je jaar niet verandert, dan is de sessie van deze chat verlopen en moet je de sessie terug activeren door `!jaar` te typen.");
+                            IUserMessage sent = await ReplyAsync(text.ToString());
+                            await sent.AddReactionsAsync(emojiJaren);
+                        }
+
                     }
-                    else
+                    catch (Discord.Net.HttpException e)
                     {
-                        StringBuilder text = new StringBuilder();
-                        text.Append("Het instellen van je nickname is niet gelukt.");
-                        text.Append(" Ik weet zelf niet wat er is fout gegaan.");
-                        text.AppendLine($" Stuur een berichtje naar {BOT_CONTRIBUTORS} met een screenshot van dit bericht.");
-                        text.AppendLine($"Foutcode: {e.HttpCode}");
-                        text.AppendLine();
-                        text.Append("Je kan voorlopig al wel je jaar kiezen door te klikken op één (of meerdere) emoji onder dit bericht.");
-                        text.Append(" Als je vakken moet meenemen, dan kan je ook het vorige jaar kiezen.");
-                        text.Append(" Als je geen kanalen meer wilt zien van een jaar, dan kan je gewoon opnieuw op de emoji ervan klikken.");
-                        IUserMessage sent_error_unknown = await ReplyAsync(text.ToString());
-                        await sent_error_unknown.AddReactionsAsync(emojiJaren);
+                        if (e.HttpCode == System.Net.HttpStatusCode.Forbidden)
+                        {
+                            StringBuilder text = new StringBuilder();
+                            text.Append("Ik heb niet de machtigingen om jouw naam te veranderen, dit zal je zelf moeten doen.");
+                            text.Append(" Als schrale troost mag je wel kiezen in welk jaar je zit :)");
+                            IUserMessage sent_error = await ReplyAsync(text.ToString());
+                            await sent_error.AddReactionsAsync(emojiJaren);
+                        }
+                        else
+                        {
+                            StringBuilder text = new StringBuilder();
+                            text.Append("Het instellen van je nickname is niet gelukt.");
+                            text.Append(" Ik weet zelf niet wat er is fout gegaan.");
+                            text.AppendLine($" Stuur een berichtje naar {BOT_CONTRIBUTORS} met een screenshot van dit bericht.");
+                            text.AppendLine($"Foutcode: {e.HttpCode}");
+                            text.AppendLine();
+                            text.Append("Je kan voorlopig al wel je jaar kiezen door te klikken op één (of meerdere) emoji onder dit bericht.");
+                            text.Append(" Als je vakken moet meenemen, dan kan je ook het vorige jaar kiezen.");
+                            text.Append(" Als je geen kanalen meer wilt zien van een jaar, dan kan je gewoon opnieuw op de emoji ervan klikken.");
+                            IUserMessage sent_error_unknown = await ReplyAsync(text.ToString());
+                            await sent_error_unknown.AddReactionsAsync(emojiJaren);
+                        }
                     }
                 }
             }
@@ -203,24 +188,19 @@ namespace APTI_BOT.Modules
         [Summary("Stel je jaar van de server in.")]
         public async Task ChangeYearAsync()
         {
-            System.Console.WriteLine("ChangeYearAsync");
-            if (Context.IsPrivate)
+            if (Context.IsPrivate && !Context.User.IsBot)
             {
+                System.Console.WriteLine("ChangeYearAsync");
                 IUserMessage sent = await ReplyAsync("Kies je jaar door op één of meer van de emoji onder dit bericht te klikken.");
                 await sent.AddReactionsAsync(emojiJaren);
             }
         }
 
-        public async Task RemoveYearAsync(Cacheable<IUserMessage, ulong> msg, ISocketMessageChannel channel, SocketReaction reaction)
+        private async Task RemoveYearAsync(Cacheable<IUserMessage, ulong> msg, ISocketMessageChannel channel, SocketReaction reaction)
         {
-            if (reaction.User.Value.IsBot)
+            if (channel is IPrivateChannel && !reaction.User.Value.IsBot)
             {
-                return;
-            }
-
-            System.Console.WriteLine("RemoveYearAsync");
-            if (channel is IPrivateChannel)
-            {
+                System.Console.WriteLine("RemoveYearAsync");
 
                 SocketGuild _guild = _client.GetGuild(ulong.Parse(_config["ids:server"]));
                 SocketRole role;
@@ -250,18 +230,11 @@ namespace APTI_BOT.Modules
             }
         }
 
-        public async Task VerifyIdAsync(Cacheable<IUserMessage, ulong> message, ISocketMessageChannel channel, SocketReaction reaction)
+        private async Task VerifyIdAsync(Cacheable<IUserMessage, ulong> message, ISocketMessageChannel channel, SocketReaction reaction)
         {
-            if (reaction.User.Value.IsBot)
+            if (reaction.Channel.Id == ulong.Parse(_config["ids:verificatielog"]) && !reaction.User.Value.IsBot)
             {
-                return;
-            }
-
-            System.Console.WriteLine("VerifyIdAsync");
-
-            if (reaction.Channel.Id == ulong.Parse(_config["ids:verificatielog"]))
-            {
-
+                System.Console.WriteLine("VerifyIdAsync");
                 SocketGuild _guild = _client.GetGuild(ulong.Parse(_config["ids:server"]));
                 SocketRole _studentRole = _guild.GetRole(ulong.Parse(_config["ids:studentrol"]));
                 SocketRole _notVerifiedRole = _guild.GetRole(ulong.Parse(_config["ids:nietgeverifieerdrol"]));
@@ -293,21 +266,13 @@ namespace APTI_BOT.Modules
                     }
                 }
             }
-
-            return;
         }
 
-        public async Task AddYearAsync(Cacheable<IUserMessage, ulong> message, ISocketMessageChannel channel, SocketReaction reaction)
+        private async Task AddYearAsync(Cacheable<IUserMessage, ulong> message, ISocketMessageChannel channel, SocketReaction reaction)
         {
-            if (reaction.User.Value.IsBot)
-            {
-                return;
-            }
-
-            System.Console.WriteLine("AddYearAsync");
-
             if (channel is IPrivateChannel && !reaction.User.Value.IsBot)
             {
+                System.Console.WriteLine("AddYearAsync");
 
                 SocketGuild _guild = _client.GetGuild(ulong.Parse(_config["ids:server"]));
                 if (reaction.Emote.ToString() == JAAR_1_EMOJI.ToString())
