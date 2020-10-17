@@ -66,29 +66,31 @@ namespace APTI_BOT.Modules
             if (!result.IsSuccess)
             {
                 await ReplyAsync($"Sorry, wij vonden geen commando zoals **{commando}**.");
-                return;
             }
-
-            EmbedBuilder builder = new EmbedBuilder()
+            else
             {
-                Color = new Color(114, 137, 218),
-                Description = $"Hier zijn alle commando's zoals **{commando}**"
-            };
 
-            foreach (CommandMatch match in result.Commands)
-            {
-                CommandInfo cmd = match.Command;
-
-                builder.AddField(x =>
+                EmbedBuilder builder = new EmbedBuilder()
                 {
-                    x.Name = string.Join(", ", cmd.Aliases);
-                    x.Value = $"Parameters: {string.Join(", ", cmd.Parameters.Select(p => p.Name))}\n" +
-                              $"Samenvatting: {cmd.Summary}";
-                    x.IsInline = false;
-                });
-            }
+                    Color = new Color(114, 137, 218),
+                    Description = $"Hier zijn alle commando's zoals **{commando}**"
+                };
 
-            await ReplyAsync("", false, builder.Build());
+                foreach (CommandMatch match in result.Commands)
+                {
+                    CommandInfo cmd = match.Command;
+
+                    builder.AddField(x =>
+                    {
+                        x.Name = string.Join(", ", cmd.Aliases);
+                        x.Value = $"Parameters: {string.Join(", ", cmd.Parameters.Select(p => p.Name))}\n" +
+                                  $"Samenvatting: {cmd.Summary}";
+                        x.IsInline = false;
+                    });
+                }
+
+                await ReplyAsync("", false, builder.Build());
+            }
         }
     }
 }

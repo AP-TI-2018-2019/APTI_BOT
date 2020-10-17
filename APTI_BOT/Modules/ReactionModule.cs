@@ -2,6 +2,9 @@
 using Discord.Commands;
 using Discord.WebSocket;
 using Microsoft.Extensions.Configuration;
+using System;
+using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 
 namespace APTI_BOT.Modules
@@ -19,59 +22,64 @@ namespace APTI_BOT.Modules
             _config = config;
             _client = client;
             _client.ReactionAdded += PinAsync;
-            //_client.MessageReceived += RemovePinMessageAsync;
+            _client.MessageReceived += RemoveSystemPinMessageAsync;
         }
 
 
         public async Task PinAsync(Cacheable<IUserMessage, ulong> message, ISocketMessageChannel channel, SocketReaction reaction)
         {
-            if (reaction.User.Value.IsBot)
+            if (reaction.Emote.ToString().Equals(PIN_EMOJI.ToString()) && !reaction.User.Value.IsBot)
             {
-                return;
-            }
-
-            System.Console.WriteLine("PinAsync");
-            if (reaction.Emote.ToString() == PIN_EMOJI.ToString())
-            {
-                IUserMessage messageToPin = (IUserMessage)await channel.GetMessageAsync(message.Id);
-                if (!messageToPin.IsPinned)
+                IReadOnlyCollection<Discord.Rest.RestMessage> pinnedMessages = await channel.GetPinnedMessagesAsync();
+                if (pinnedMessages.Count == 50)
                 {
-                    await messageToPin.PinAsync();
-                    EmbedBuilder embedBuilder = new EmbedBuilder()
-                        .WithTitle("Pinned");
-                    try
+                    await ((ISocketMessageChannel)_client.GetChannel(channel.Id)).SendMessageAsync($"Het maximaal aantal gepinde berichten is overschreden. Roep een @Beheerder om de gepinde berichten te herevalueren.", false, null);
+                }
+                else
+                {
+                    Console.WriteLine("PinAsync");
+                    IUserMessage messageToPin = (await message.DownloadAsync());
+                    if (!messageToPin.IsPinned)
                     {
-                        embedBuilder = embedBuilder.AddField("Bericht", messageToPin.Content, false);
-                    }
-                    catch (System.ArgumentException)
-                    {
-                        foreach (IAttachment attachment in messageToPin.Attachments)
+                        await messageToPin.PinAsync();
+                        EmbedBuilder embedBuilder = new EmbedBuilder()
+                            .WithTitle("Pinned");
+                        try
                         {
-                            if (attachment.IsSpoiler())
+                            embedBuilder = embedBuilder.AddField("Bericht", messageToPin.Content, false);
+                        }
+                        catch (System.ArgumentException)
+                        {
+                            foreach (IAttachment attachment in messageToPin.Attachments)
                             {
-                                embedBuilder = embedBuilder.AddField("Afbeelding", $"||{attachment.Url}||", false);
-                            }
-                            else
-                            {
-                                embedBuilder = embedBuilder.WithImageUrl(attachment.Url);
+                                if (attachment.IsSpoiler())
+                                {
+                                    embedBuilder = embedBuilder.AddField("Afbeelding", $"||{attachment.Url}||", false);
+                                }
+                                else
+                                {
+                                    embedBuilder = embedBuilder.WithImageUrl(attachment.Url);
+                                }
                             }
                         }
+                        Embed embed = embedBuilder.AddField("Kanaal", $"<#{messageToPin.Channel.Id}>", true)
+                        .AddField("Door", reaction.User.Value.Mention, true)
+                        .WithAuthor(messageToPin.Author.ToString(), messageToPin.Author.GetAvatarUrl(), messageToPin.GetJumpUrl())
+                        .Build();
+                        await ((ISocketMessageChannel)_client.GetChannel(ulong.Parse(_config["ids:pinlog"]))).SendMessageAsync("", false, embed);
                     }
-                    Embed embed = embedBuilder.AddField("Kanaal", $"<#{messageToPin.Channel.Id}>", true)
-                    .AddField("Door", reaction.User.Value.Mention, true)
-                    .WithAuthor(messageToPin.Author.ToString(), messageToPin.Author.GetAvatarUrl(), messageToPin.GetJumpUrl())
-                    .Build();
-                    await ((ISocketMessageChannel)_client.GetChannel(ulong.Parse(_config["ids:pinlog"]))).SendMessageAsync("", false, embed);
                 }
             }
         }
-        //private async Task RemovePinMessageAsync(SocketMessage message)
-        //{
-        //    System.Console.WriteLine("RemovePinMessageAsync");
-        //    if (message.Source == MessageSource.System && message.Author.Id == _client.CurrentUser.Id)
-        //    {
-        //        await message.DeleteAsync();
-        //    }
-        //}
+
+        private async Task RemoveSystemPinMessageAsync(SocketMessage message)
+        {
+            message.Tags.ToList().ForEach(x => Console.WriteLine(x));
+            if (message.Source == MessageSource.System && message.Author.Id == _client.CurrentUser.Id)
+            {
+                Console.WriteLine("RemovePinMessageAsync");
+                await message.DeleteAsync();
+            }
+        }
     }
 }

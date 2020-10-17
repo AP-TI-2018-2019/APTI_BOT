@@ -24,15 +24,16 @@ namespace APTI_BOT.Modules
             if (!DateTime.TryParse(splitsing[1], out DateTime datum))
             {
                 await ReplyAsync($"De ingevoerde datum is ongeldig!", false, null);
-                return;
             }
+            else
+            {
+                await ReplyAsync($"Oké: ik zal '{boodschap}' naar je sturen op {datum}", false, null);
 
-            await ReplyAsync($"Oké: ik zal '{boodschap}' naar je sturen op {datum}", false, null);
-
-            Timer timer = new Timer((datum - DateTime.Now).TotalMilliseconds);
-            timer.Elapsed += async (sender, e) => await NotifyUser(sender, e, Context.User, boodschap);
-            timer.Enabled = true;
-            timer.AutoReset = false;
+                Timer timer = new Timer((datum - DateTime.Now).TotalMilliseconds);
+                timer.Elapsed += async (sender, e) => await NotifyUser(sender, e, Context.User, boodschap);
+                timer.Enabled = true;
+                timer.AutoReset = false;
+            }
         }
 
         private async Task NotifyUser(object sender, ElapsedEventArgs e, SocketUser user, string boodschap)
