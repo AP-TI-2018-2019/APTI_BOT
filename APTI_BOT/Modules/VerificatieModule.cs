@@ -53,29 +53,9 @@ namespace APTI_BOT.Modules
             _client.MessageReceived += CreateEmbedInVerificationChannelAsync;
         }
 
-        [Command("start")]
-        [Summary("Start de setup procedure voor nieuwe (of bestaande) leden. Zo kan je uw naam en rol aanpassen en eenmalig uw identiteit.")]
-        public async Task WelcomeDMMessageAsync()
-        {
-            StringBuilder text = new StringBuilder();
-            text.Append("Hey, welkom in onze server!");
-            text.Append(" Ik ben de APTI-bot en mijn doel is om het toetreden tot de server eenvoudiger te maken.");
-            text.Append(" We zullen beginnen met je naam op de server in te stellen.");
-            text.AppendLine(" Om dit te doen type je je naam en klas in het volgende formaat: `{Naam} - {Jaar}TI{Groep}` voorafgegeaan door `!naam`.");
-            text.Append("Bijvoorbeeld: `!naam Maxim - 1TIC`.");
-            await Context.User.SendMessageAsync(text.ToString());
-
-            SocketGuild _guild = _client.GetGuild(ulong.Parse(_config["ids:server"]));
-            SocketRole _studentRole = _guild.GetRole(ulong.Parse(_config["ids:studentrol"]));
-            SocketRole _notVerifiedRole = _guild.GetRole(ulong.Parse(_config["ids:nietgeverifieerdrol"]));
-            if (!_guild.GetUser(Context.User.Id).Roles.Contains(_studentRole))
-            {
-                await _guild.GetUser(Context.User.Id).AddRoleAsync(_notVerifiedRole);
-            }
-        }
-
         public async Task CreateEmbedInVerificationChannelAsync(SocketMessage message)
         {
+            Console.WriteLine(message.Author);
             if (!message.Author.IsBot && message.Channel is IPrivateChannel && message.Source == MessageSource.User && message.Attachments.Count > 0)
             {
                 // Verificatie ding
