@@ -76,16 +76,10 @@ namespace APTI_BOT.Modules
 
         public async Task CreateEmbedInVerificationChannelAsync(SocketMessage message)
         {
-            if (message.Author.IsBot)
-            {
-                return;
-            }
-
-            if (message.Channel is IPrivateChannel && message.Source == MessageSource.User && message.Attachments.Count > 0)
+            if (!message.Author.IsBot && message.Channel is IPrivateChannel && message.Source == MessageSource.User && message.Attachments.Count > 0)
             {
                 // Verificatie ding
                 EmbedBuilder embedBuilder = new EmbedBuilder().WithTitle("Verificatie student");
-
                 foreach (IAttachment attachment in message.Attachments)
                 {
                     if (attachment.IsSpoiler())
@@ -105,7 +99,6 @@ namespace APTI_BOT.Modules
                     .WithTimestamp(DateTime.Now.ToLocalTime())
                     .Build();
                 Console.WriteLine("I'm making another embed!");
-
                 SocketGuild _guild = _client.GetGuild(ulong.Parse(_config["ids:server"]));
                 ISocketMessageChannel verificationLogChannel = ((ISocketMessageChannel)_guild.GetChannel(ulong.Parse(_config["ids:verificatielog"])));
                 RestUserMessage verificationEmbed = await verificationLogChannel.SendMessageAsync("", false, embed);

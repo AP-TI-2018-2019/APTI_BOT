@@ -1,23 +1,20 @@
 {
   "format": 1,
   "restore": {
-    "C:\\Users\\danai\\Documents\\GitHub\\APTI_BOT\\APTI_BOT\\APTI_BOT.csproj": {}
+    "C:\\Users\\maxim\\Source\\Repos\\APTI_BOT\\APTI_BOT\\APTI_BOT.csproj": {}
   },
   "projects": {
-    "C:\\Users\\danai\\Documents\\GitHub\\APTI_BOT\\APTI_BOT\\APTI_BOT.csproj": {
+    "C:\\Users\\maxim\\Source\\Repos\\APTI_BOT\\APTI_BOT\\APTI_BOT.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\Users\\danai\\Documents\\GitHub\\APTI_BOT\\APTI_BOT\\APTI_BOT.csproj",
+        "projectUniqueName": "C:\\Users\\maxim\\Source\\Repos\\APTI_BOT\\APTI_BOT\\APTI_BOT.csproj",
         "projectName": "APTI_BOT",
-        "projectPath": "C:\\Users\\danai\\Documents\\GitHub\\APTI_BOT\\APTI_BOT\\APTI_BOT.csproj",
-        "packagesPath": "C:\\Users\\danai\\.nuget\\packages\\",
-        "outputPath": "C:\\Users\\danai\\Documents\\GitHub\\APTI_BOT\\APTI_BOT\\obj\\",
+        "projectPath": "C:\\Users\\maxim\\Source\\Repos\\APTI_BOT\\APTI_BOT\\APTI_BOT.csproj",
+        "packagesPath": "C:\\Users\\maxim\\.nuget\\packages\\",
+        "outputPath": "C:\\Users\\maxim\\Source\\Repos\\APTI_BOT\\APTI_BOT\\obj\\",
         "projectStyle": "PackageReference",
-        "fallbackFolders": [
-          "C:\\Program Files\\dotnet\\sdk\\NuGetFallbackFolder"
-        ],
         "configFilePaths": [
-          "C:\\Users\\danai\\AppData\\Roaming\\NuGet\\NuGet.Config",
+          "C:\\Users\\maxim\\AppData\\Roaming\\NuGet\\NuGet.Config",
           "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
         ],
         "originalTargetFrameworks": [
