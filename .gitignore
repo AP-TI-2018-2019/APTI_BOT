@@ -1,5 +1,6 @@
 config.json
 config_apti.json
+_config.yml
 
 
 ## Ignore Visual Studio temporary files, build results, and
@@ -38,6 +39,7 @@ bld/
 
 # Visual Studio 2015/2017 cache/options directory
 .vs/
+.vscode/
 # Uncomment if you have tasks that create the project's static files in wwwroot
 #wwwroot/
 

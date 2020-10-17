@@ -40,11 +40,31 @@
           "dependencies": {
             "Discord.Net": {
               "target": "Package",
-              "version": "[2.1.1, )"
+              "version": "[2.2.0, )"
+            },
+            "Microsoft.Extensions.Configuration": {
+              "target": "Package",
+              "version": "[3.1.9, )"
+            },
+            "Microsoft.Extensions.Configuration.Abstractions": {
+              "target": "Package",
+              "version": "[3.1.9, )"
+            },
+            "Microsoft.Extensions.DependencyInjection": {
+              "target": "Package",
+              "version": "[3.1.9, )"
+            },
+            "Microsoft.NETCore.App": {
+              "target": "Package",
+              "version": "[2.2.8, )"
+            },
+            "NetEscapades.Configuration.Yaml": {
+              "target": "Package",
+              "version": "[2.0.1, )"
             },
             "Newtonsoft.Json": {
               "target": "Package",
-              "version": "[12.0.2, )"
+              "version": "[12.0.3, )"
             }
           },
           "imports": [
@@ -62,7 +82,7 @@
               "privateAssets": "all"
             }
           },
-          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\3.1.301\\RuntimeIdentifierGraph.json"
+          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\3.1.402\\RuntimeIdentifierGraph.json"
         }
       }
     }
