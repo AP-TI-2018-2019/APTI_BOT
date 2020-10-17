@@ -241,10 +241,13 @@ namespace APTI_BOT.Modules
                 IEnumerator<IEmbed> embeds = message.DownloadAsync().Result.Embeds.GetEnumerator();
                 embeds.MoveNext();
                 bool isStudent = _guild.GetUser(ulong.Parse(embeds.Current.Fields[0].Value)).Roles.Contains(_studentRole);
+                Console.WriteLine(isStudent);
                 bool isNietVerificeerd = _guild.GetUser(ulong.Parse(embeds.Current.Fields[0].Value)).Roles.Contains(_notVerifiedRole);
-                if (!isStudent && isNietVerificeerd)
+                Console.WriteLine(isNietVerificeerd);
+                if (!isStudent)
                 {
-                    if (reaction.Emote.ToString().Equals(ACCEPTEER_EMOJI.ToString()) && !reaction.User.Value.IsBot && channel is IPrivateChannel)
+                    Console.WriteLine(!isStudent);
+                    if (reaction.Emote.ToString().Equals(ACCEPTEER_EMOJI.ToString()) && !reaction.User.Value.IsBot)
                     {
                         SocketGuildUser user = _guild.GetUser(ulong.Parse(embeds.Current.Fields[0].Value));
                         await user.AddRoleAsync(_studentRole);
@@ -255,12 +258,13 @@ namespace APTI_BOT.Modules
                         text.Append(" Als je vakken moet meenemen, dan kan je ook het vorige jaar kiezen.");
                         text.Append(" Als je geen kanalen meer wilt zien van een jaar, dan kan je gewoon opnieuw op de emoji ervan klikken.");
                         text.Append(" Als je jaar niet verandert, dan is de sessie van deze chat verlopen en moet je de sessie terug activeren door `!jaar` te typen.");
-                        await _guild.GetUser(reaction.UserId).RemoveRoleAsync(_notVerifiedRole);
                         await _guild.GetUser(reaction.UserId).AddRoleAsync(_studentRole);
+                        Console.WriteLine(user.Id);
+                        Console.WriteLine(user.Nickname);
                         IUserMessage sent = await user.SendMessageAsync(text.ToString());
                         await sent.AddReactionsAsync(emojiJaren);
                     }
-                    else if (reaction.Emote.ToString().Equals(WEIGER_EMOJI.ToString()) && !reaction.User.Value.IsBot && channel is IPrivateChannel)
+                    else if (reaction.Emote.ToString().Equals(WEIGER_EMOJI.ToString()) && !reaction.User.Value.IsBot)
                     {
                         await _guild.GetUser(ulong.Parse(embeds.Current.Fields[0].Value)).SendMessageAsync("Jouw inzending werd afgekeurd. Dien een nieuwe foto in.");
                     }
