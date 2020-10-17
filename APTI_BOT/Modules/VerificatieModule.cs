@@ -237,16 +237,11 @@ namespace APTI_BOT.Modules
 
                 SocketGuild _guild = _client.GetGuild(ulong.Parse(_config["ids:server"]));
                 SocketRole _studentRole = _guild.GetRole(ulong.Parse(_config["ids:studentrol"]));
-                SocketRole _notVerifiedRole = _guild.GetRole(ulong.Parse(_config["ids:nietgeverifieerdrol"]));
                 IEnumerator<IEmbed> embeds = message.DownloadAsync().Result.Embeds.GetEnumerator();
                 embeds.MoveNext();
                 bool isStudent = _guild.GetUser(ulong.Parse(embeds.Current.Fields[0].Value)).Roles.Contains(_studentRole);
-                Console.WriteLine(isStudent);
-                bool isNietVerificeerd = _guild.GetUser(ulong.Parse(embeds.Current.Fields[0].Value)).Roles.Contains(_notVerifiedRole);
-                Console.WriteLine(isNietVerificeerd);
                 if (!isStudent)
                 {
-                    Console.WriteLine(!isStudent);
                     if (reaction.Emote.ToString().Equals(ACCEPTEER_EMOJI.ToString()) && !reaction.User.Value.IsBot)
                     {
                         SocketGuildUser user = _guild.GetUser(ulong.Parse(embeds.Current.Fields[0].Value));
@@ -259,8 +254,6 @@ namespace APTI_BOT.Modules
                         text.Append(" Als je geen kanalen meer wilt zien van een jaar, dan kan je gewoon opnieuw op de emoji ervan klikken.");
                         text.Append(" Als je jaar niet verandert, dan is de sessie van deze chat verlopen en moet je de sessie terug activeren door `!jaar` te typen.");
                         await _guild.GetUser(reaction.UserId).AddRoleAsync(_studentRole);
-                        Console.WriteLine(user.Id);
-                        Console.WriteLine(user.Nickname);
                         IUserMessage sent = await user.SendMessageAsync(text.ToString());
                         await sent.AddReactionsAsync(emojiJaren);
                     }
