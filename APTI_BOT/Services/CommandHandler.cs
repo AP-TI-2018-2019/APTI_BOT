@@ -49,7 +49,7 @@ namespace APTI_BOT.Services
 
                 if (!result.IsSuccess)     // If not successful, reply with the error.
                 {
-                    await context.Channel.SendMessageAsync(result.ToString());
+                    await context.Channel.SendMessageAsync("Dit commando werd niet gevonden! Kijk na of je typefouten hebt gemaakt.");
                 }
             }
         }
