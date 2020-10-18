@@ -18,7 +18,7 @@ namespace APTI_BOT.Services
         // DiscordSocketClient and CommandService are injected automatically from the IServiceProvider
         public LoggingService(DiscordSocketClient discord, CommandService commands)
         {
-            LogDirectory = Path.Combine(AppContext.BaseDirectory, "logs");
+            LogDirectory = Path.Combine(@Directory.GetCurrentDirectory() + "/../../..", "logs");
 
             _discord = discord;
             _commands = commands;
