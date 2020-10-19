@@ -8,16 +8,12 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 
 namespace APTI_BOT.Modules
 {
     public class VerificatieModule : ModuleBase<SocketCommandContext>
-    { 
-
-        
-
+    {
         private readonly IConfigurationRoot _config;
         private readonly DiscordSocketClient _client;
 
@@ -32,8 +28,12 @@ namespace APTI_BOT.Modules
 
         public async Task CreateEmbedInVerificationChannelAsync(SocketMessage message)
         {
-            Console.WriteLine(message.Author);
-            if (!message.Author.IsBot && message.Channel is IPrivateChannel && message.Source == MessageSource.User && message.Attachments.Count > 0)
+            if (!message.Author.IsAUser())
+            {
+                return;
+            }
+
+            if (message.Channel is IPrivateChannel && message.Source == MessageSource.User && message.Attachments.Count > 0)
             {
                 // Verificatie ding
                 EmbedBuilder embedBuilder = new EmbedBuilder().WithTitle("Verificatie student");
@@ -65,18 +65,18 @@ namespace APTI_BOT.Modules
 
         public async Task VerifyIdAsync(Cacheable<IUserMessage, ulong> message, ISocketMessageChannel channel, SocketReaction reaction)
         {
-            if (reaction.User.Value.IsBot)
+            if (!reaction.User.Value.IsAUser())
             {
                 return;
             }
 
-            System.Console.WriteLine("VerifyIdAsync");
-
             if (reaction.Channel.Id == ulong.Parse(_config["ids:verificatielog"]))
             {
+                Console.WriteLine("VerifyIdAsync");
 
                 SocketGuild _guild = _client.GetGuild(ulong.Parse(_config["ids:server"]));
                 SocketRole _studentRole = _guild.GetRole(ulong.Parse(_config["ids:studentrol"]));
+                SocketRole _notVerifiedRole = _guild.GetRole(ulong.Parse(_config["ids:nietgeverifieerdrol"]));
                 IEnumerator<IEmbed> embeds = message.DownloadAsync().Result.Embeds.GetEnumerator();
                 embeds.MoveNext();
                 bool isStudent = _guild.GetUser(ulong.Parse(embeds.Current.Fields[0].Value)).Roles.Contains(_studentRole);
@@ -86,6 +86,8 @@ namespace APTI_BOT.Modules
                     {
                         SocketGuildUser user = _guild.GetUser(ulong.Parse(embeds.Current.Fields[0].Value));
                         await user.AddRoleAsync(_studentRole);
+                        await user.RemoveRoleAsync(_notVerifiedRole);
+
 
                         StringBuilder text = new StringBuilder();
                         text.Append("Jouw inzending werd zojuist goedgekeurd.");
@@ -93,7 +95,6 @@ namespace APTI_BOT.Modules
                         text.Append(" Als je vakken moet meenemen, dan kan je ook het vorige jaar kiezen.");
                         text.Append(" Als je geen kanalen meer wilt zien van een jaar, dan kan je gewoon opnieuw op de emoji ervan klikken.");
                         text.Append(" Als je jaar niet verandert, dan is de sessie van deze chat verlopen en moet je de sessie terug activeren door `!jaar` te typen.");
-                        await _guild.GetUser(reaction.UserId).AddRoleAsync(_studentRole);
                         IUserMessage sent = await user.SendMessageAsync(text.ToString());
                         await sent.AddReactionsAsync(Emojis.emojiJaren);
                     }
@@ -109,15 +110,14 @@ namespace APTI_BOT.Modules
 
         public async Task AddYearAsync(Cacheable<IUserMessage, ulong> message, ISocketMessageChannel channel, SocketReaction reaction)
         {
-            if (reaction.User.Value.IsBot)
+            if (!reaction.User.Value.IsAUser())
             {
                 return;
             }
 
-            System.Console.WriteLine("AddYearAsync");
-
             if (channel is IPrivateChannel && !reaction.User.Value.IsBot)
             {
+                Console.WriteLine("AddYearAsync");
 
                 SocketGuild _guild = _client.GetGuild(ulong.Parse(_config["ids:server"]));
                 if (reaction.Emote.ToString() == Emojis.JAAR_1_EMOJI.ToString())

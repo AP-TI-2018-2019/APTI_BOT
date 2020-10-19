@@ -5,7 +5,6 @@ using Discord.WebSocket;
 using Microsoft.Extensions.Configuration;
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Threading.Tasks;
 
 namespace APTI_BOT.Modules
@@ -28,7 +27,12 @@ namespace APTI_BOT.Modules
 
         public async Task PinAsync(Cacheable<IUserMessage, ulong> message, ISocketMessageChannel channel, SocketReaction reaction)
         {
-            if (reaction.Emote.ToString().Equals(Emojis.PIN_EMOJI.ToString()) && !reaction.User.Value.IsBot)
+            if (!reaction.User.Value.IsAUser())
+            {
+                return;
+            }
+
+            if (reaction.Emote.ToString().Equals(Emojis.PIN_EMOJI.ToString()))
             {
                 IReadOnlyCollection<Discord.Rest.RestMessage> pinnedMessages = await channel.GetPinnedMessagesAsync();
                 if (pinnedMessages.Count == 50)
@@ -74,7 +78,6 @@ namespace APTI_BOT.Modules
 
         private async Task RemoveSystemPinMessageAsync(SocketMessage message)
         {
-            message.Tags.ToList().ForEach(x => Console.WriteLine(x));
             if (message.Source == MessageSource.System && message.Author.Id == _client.CurrentUser.Id)
             {
                 Console.WriteLine("RemovePinMessageAsync");

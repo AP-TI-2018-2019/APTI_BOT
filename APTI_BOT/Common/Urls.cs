@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-
-namespace APTI_BOT.Common
+﻿namespace APTI_BOT.Common
 {
     public class Urls
     {

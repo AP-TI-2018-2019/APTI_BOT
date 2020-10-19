@@ -29,8 +29,8 @@ namespace APTI_BOT.Services
 
         private async Task OnMessageReceivedAsync(SocketMessage s)
         {
-            SocketUserMessage msg = s as SocketUserMessage;     // Ensure the message is from a user/bot
-            if (msg == null)
+            // Ensure the message is from a user/bot
+            if (!(s is SocketUserMessage msg))
             {
                 return;
             }

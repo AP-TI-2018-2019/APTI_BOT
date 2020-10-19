@@ -1,14 +1,8 @@
 ﻿using APTI_BOT.Common;
 using Discord;
 using Discord.Commands;
-using Discord.Rest;
 using Discord.WebSocket;
 using Microsoft.Extensions.Configuration;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 
 namespace APTI_BOT.Modules
@@ -29,9 +23,14 @@ namespace APTI_BOT.Modules
         [Summary("Stel je jaar van de server in.")]
         public async Task ChangeYearAsync()
         {
-            System.Console.WriteLine("ChangeYearAsync");
+            if (!Context.User.IsAUser())
+            {
+                return;
+            }
+
             if (Context.IsPrivate)
             {
+                System.Console.WriteLine("ChangeYearAsync");
                 IUserMessage sent = await ReplyAsync("Kies je jaar door op één of meer van de emoji onder dit bericht te klikken.");
                 await sent.AddReactionsAsync(Emojis.emojiJaren);
             }
@@ -39,14 +38,14 @@ namespace APTI_BOT.Modules
 
         public async Task RemoveYearAsync(Cacheable<IUserMessage, ulong> msg, ISocketMessageChannel channel, SocketReaction reaction)
         {
-            if (reaction.User.Value.IsBot)
+            if (!reaction.User.Value.IsAUser())
             {
                 return;
             }
 
-            System.Console.WriteLine("RemoveYearAsync");
             if (channel is IPrivateChannel)
             {
+                System.Console.WriteLine("RemoveYearAsync");
 
                 SocketGuild _guild = _client.GetGuild(ulong.Parse(_config["ids:server"]));
                 SocketRole role;
