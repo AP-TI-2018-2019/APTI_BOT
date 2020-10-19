@@ -97,7 +97,7 @@ namespace APTI_BOT.Modules
                         text.Append(" Als je geen kanalen meer wilt zien van een jaar, dan kan je gewoon opnieuw op de emoji ervan klikken.");
                         text.Append(" Als je jaar niet verandert, dan is de sessie van deze chat verlopen en moet je de sessie terug activeren door `!jaar` te typen.");
                         IUserMessage sent = await ReplyAsync(text.ToString());
-                        await sent.AddReactionsAsync(emojiJaren);
+                        await sent.AddReactionsAsync(Emojis.emojiJaren);
                     }
 
                 }
@@ -109,21 +109,21 @@ namespace APTI_BOT.Modules
                         text.Append("Ik heb niet de machtigingen om jouw naam te veranderen, dit zal je zelf moeten doen.");
                         text.Append(" Als schrale troost mag je wel kiezen in welk jaar je zit :)");
                         IUserMessage sent_error = await ReplyAsync(text.ToString());
-                        await sent_error.AddReactionsAsync(emojiJaren);
+                        await sent_error.AddReactionsAsync(Emojis.emojiJaren);
                     }
                     else
                     {
                         StringBuilder text = new StringBuilder();
                         text.Append("Het instellen van je nickname is niet gelukt.");
                         text.Append(" Ik weet zelf niet wat er is fout gegaan.");
-                        text.AppendLine($" Stuur een berichtje naar {BOT_CONTRIBUTORS} met een screenshot van dit bericht.");
+                        text.AppendLine($" Stuur een berichtje naar {Contributors.BOT_CONTRIBUTORS} met een screenshot van dit bericht.");
                         text.AppendLine($"Foutcode: {e.HttpCode}");
                         text.AppendLine();
                         text.Append("Je kan voorlopig al wel je jaar kiezen door te klikken op één (of meerdere) emoji onder dit bericht.");
                         text.Append(" Als je vakken moet meenemen, dan kan je ook het vorige jaar kiezen.");
                         text.Append(" Als je geen kanalen meer wilt zien van een jaar, dan kan je gewoon opnieuw op de emoji ervan klikken.");
                         IUserMessage sent_error_unknown = await ReplyAsync(text.ToString());
-                        await sent_error_unknown.AddReactionsAsync(emojiJaren);
+                        await sent_error_unknown.AddReactionsAsync(Emojis.emojiJaren);
                     }
                 }
             }
