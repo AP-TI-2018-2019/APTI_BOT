@@ -16,7 +16,7 @@ namespace APTI_BOT.Common
 
         public static string GetContributors()
         {
-            return BOT_CONTRIBUTORS.Count() > 1 ? string.Join(", ", BOT_CONTRIBUTORS.Take(BOT_CONTRIBUTORS.Count() - 1)) + " and " + BOT_CONTRIBUTORS.Last() : BOT_CONTRIBUTORS.FirstOrDefault();
+            return BOT_CONTRIBUTORS.Count() > 1 ? string.Join(", ", BOT_CONTRIBUTORS.Take(BOT_CONTRIBUTORS.Count() - 1)) + " en " + BOT_CONTRIBUTORS.Last() : BOT_CONTRIBUTORS.FirstOrDefault();
         }
     }
 }
