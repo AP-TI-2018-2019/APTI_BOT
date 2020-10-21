@@ -31,6 +31,10 @@ namespace APTI_BOT.Modules
             {
                 await ReplyAsync($"De ingevoerde datum is ongeldig!", false, null);
             }
+            else if (datum < DateTime.Now)
+            {
+                await ReplyAsync($"De ingevoerde datum bevindt zich in het verleden!", false, null);
+            }
             else
             {
                 await ReplyAsync($"Oké: ik zal '{boodschap}' naar je sturen op {datum}", false, null);
