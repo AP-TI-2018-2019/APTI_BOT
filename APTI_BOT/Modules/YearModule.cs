@@ -7,6 +7,7 @@ using System.Threading.Tasks;
 
 namespace APTI_BOT.Modules
 {
+    [Name("Jaar instellen commando's")]
     public class YearModule : ModuleBase<SocketCommandContext>
     {
         private readonly IConfigurationRoot _config;

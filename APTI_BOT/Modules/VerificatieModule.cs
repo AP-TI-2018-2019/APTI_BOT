@@ -12,6 +12,7 @@ using System.Threading.Tasks;
 
 namespace APTI_BOT.Modules
 {
+    [Name("Verificatie commando's")]
     public class VerificatieModule : ModuleBase<SocketCommandContext>
     {
         private readonly IConfigurationRoot _config;
