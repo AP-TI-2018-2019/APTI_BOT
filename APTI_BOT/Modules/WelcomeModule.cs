@@ -64,8 +64,9 @@ namespace APTI_BOT.Modules
             text.Append("Hey, welkom in onze server!");
             text.Append(" Ik ben de APTI-bot en mijn doel is om het toetreden tot de server eenvoudiger te maken.");
             text.Append(" We zullen beginnen met je naam op de server in te stellen.");
-            text.AppendLine(" Om dit te doen type je je naam en klas in het volgende formaat: `{Naam} - {Jaar}TI{Groep}` voorafgegeaan door `!naam`.");
-            text.Append("Bijvoorbeeld: `!naam Maxim - 1TIC`.");
+            text.AppendLine(" Om dit te doen type je je naam en klas in het volgende formaat: `{Naam} - {Jaar}(TI|EICT){Groep}` voorafgegeaan door `!naam`.");
+            text.AppendLine("Voorbeeld 1: `!naam Maxim - 1TIC`.");
+            text.Append("Voorbeeld 2: `!naam Dana - 1EICT2`.");
 
             return text.ToString();
         }
