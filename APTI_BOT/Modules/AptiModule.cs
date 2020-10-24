@@ -49,6 +49,7 @@ namespace APTI_BOT.Modules
                     {
                         x.Nickname = message;
                     });
+
                     System.Collections.Generic.IEnumerator<SocketRole> roles = _guild.GetUser(Context.User.Id).Roles.GetEnumerator();
                     bool student = false;
                     while (roles.MoveNext())
@@ -102,6 +103,20 @@ namespace APTI_BOT.Modules
                         text.Append(" Als je geen kanalen meer wilt zien van een jaar, dan kan je gewoon opnieuw op de emoji ervan klikken.");
                         IUserMessage sent_error_unknown = await ReplyAsync(text.ToString());
                         await sent_error_unknown.AddReactionsAsync(Emojis.emojiJaren);
+                    }
+                }
+                finally
+                {
+                    var tiRole = _guild.GetRole(ulong.Parse(_config["ids:toegepasteinformatierol"]));
+                    var eictRole = _guild.GetRole(ulong.Parse(_config["ids:elektronicaictrol"]));
+
+                    if (message.Contains("EICT"))
+                    {
+                        await user.AddRoleAsync(eictRole);
+                    }
+                    else if (message.Contains("TI"))
+                    {
+                        await user.AddRoleAsync(tiRole);
                     }
                 }
             }
