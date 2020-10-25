@@ -40,13 +40,13 @@ namespace APTI_BOT.Modules
                 await ReplyAsync($"Oké: ik zal '{boodschap}' naar je sturen op {datum}", false, null);
 
                 Timer timer = new Timer((datum - DateTime.Now).TotalMilliseconds);
-                timer.Elapsed += async (sender, e) => await NotifyUser(sender, e, Context.User, boodschap);
+                timer.Elapsed += async (sender, e) => await NotifyUserAsync(sender, e, Context.User, boodschap);
                 timer.Enabled = true;
                 timer.AutoReset = false;
             }
         }
 
-        private async Task NotifyUser(object sender, ElapsedEventArgs e, SocketUser user, string boodschap)
+        private async Task NotifyUserAsync(object sender, ElapsedEventArgs e, SocketUser user, string boodschap)
         {
             if (!Context.User.IsAUser())
             {
