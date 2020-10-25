@@ -65,5 +65,28 @@ namespace APTI_BOT.Modules
                 }
             }
         }
+
+        [Command("reminder")]
+        [Summary("Laat de bot een bericht schrijven in een bepaald kanaal.")]
+        [RequireUserPermission(GuildPermission.Administrator)]
+        public async Task MakeReminderAsync(ulong channelId, [Remainder] string text)
+        {
+            SocketGuildUser userToCheck = Context.User as SocketGuildUser;
+            SocketRole adminRole = Context.Guild.GetRole(ulong.Parse(_config["ids:beheerderrol"]));
+            bool role = (userToCheck as IGuildUser).Guild.Roles.Contains(adminRole);
+
+            if (!role)
+            {
+                await ReplyAsync("U heeft geen recht om dit commando uit te voeren!");
+                return;
+            }
+            else
+            {
+                SocketGuild _guild = _client.GetGuild(ulong.Parse(_config["ids:server"]));
+                var channel = _guild.GetTextChannel(channelId);
+
+                await channel.SendMessageAsync(text);
+            }
+        }
     }
 }
