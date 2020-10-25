@@ -33,7 +33,7 @@ namespace APTI_BOT.Modules
 
             if (!role)
             {
-                await ReplyAsync("U heeft geen recht om dit commando uit te voeren!");
+                await ReplyAsync("U heeft niet voldoende rechten om dit commando uit te voeren!");
                 return;
             }
             else
@@ -77,7 +77,7 @@ namespace APTI_BOT.Modules
 
             if (!role)
             {
-                await ReplyAsync("U heeft geen recht om dit commando uit te voeren!");
+                await ReplyAsync("U heeft niet voldoende rechten om dit commando uit te voeren!");
                 return;
             }
             else
@@ -107,7 +107,7 @@ namespace APTI_BOT.Modules
 
             if (!role)
             {
-                await ReplyAsync("U heeft geen recht om dit commando uit te voeren!");
+                await ReplyAsync("U heeft niet voldoende rechten om dit commando uit te voeren!");
                 return;
             }
             else
