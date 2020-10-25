@@ -83,7 +83,7 @@ namespace APTI_BOT.Modules
             else
             {
                 SocketGuild _guild = _client.GetGuild(ulong.Parse(_config["ids:server"]));
-                var channel = _guild.GetTextChannel(channelId);
+                SocketTextChannel channel = _guild.GetTextChannel(channelId);
 
                 if (channel == null)
                 {
@@ -114,7 +114,7 @@ namespace APTI_BOT.Modules
             {
                 SocketGuild guild = _client.GetGuild(ulong.Parse(_config["ids:server"]));
 
-                var channel = (SocketTextChannel) guild.Channels.FirstOrDefault(x => x.Name.Contains("niet-geverifieerd"));
+                SocketTextChannel channel = (SocketTextChannel)guild.Channels.FirstOrDefault(x => x.Name.Contains("niet-geverifieerd"));
 
                 if (channel == null)
                 {
