@@ -107,8 +107,8 @@ namespace APTI_BOT.Modules
                 }
                 finally
                 {
-                    var tiRole = _guild.GetRole(ulong.Parse(_config["ids:toegepasteinformatierol"]));
-                    var eictRole = _guild.GetRole(ulong.Parse(_config["ids:elektronicaictrol"]));
+                    SocketRole tiRole = _guild.GetRole(ulong.Parse(_config["ids:toegepasteinformatierol"]));
+                    SocketRole eictRole = _guild.GetRole(ulong.Parse(_config["ids:elektronicaictrol"]));
 
                     if (message.Contains("EICT"))
                     {

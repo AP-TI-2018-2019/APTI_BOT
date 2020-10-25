@@ -20,12 +20,15 @@ namespace APTI_BOT.Modules
         {
             _config = config;
             _client = client;
-            _client.UserJoined += AnnounceJoinedUser;
+            _client.UserJoined += AnnounceJoinedUserAsync;
         }
 
-        private async Task AnnounceJoinedUser(SocketGuildUser arg)
+        private async Task AnnounceJoinedUserAsync(SocketGuildUser arg)
         {
-            if (!arg.IsAUser()) return;
+            if (!arg.IsAUser())
+            {
+                return;
+            }
 
             await arg.SendMessageAsync(GetWelcomeText());
 
