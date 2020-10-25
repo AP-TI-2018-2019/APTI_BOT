@@ -85,7 +85,46 @@ namespace APTI_BOT.Modules
                 SocketGuild _guild = _client.GetGuild(ulong.Parse(_config["ids:server"]));
                 var channel = _guild.GetTextChannel(channelId);
 
-                await channel.SendMessageAsync(text);
+                if (channel == null)
+                {
+                    await ReplyAsync("Er is geen tekstkanaal gevonden met de gegeven channel id.");
+                }
+                else
+                {
+                    await channel.SendMessageAsync(text);
+                }
+            }
+        }
+
+        [Command("remindnonverified")]
+        [Summary("Laat de bot de mensen met een niet geverifieerd rol aan herinneren zich te verifiëren.")]
+        [RequireUserPermission(GuildPermission.Administrator)]
+        public async Task RemindNonVerifiedUsersAsync()
+        {
+            SocketGuildUser userToCheck = Context.User as SocketGuildUser;
+            SocketRole adminRole = Context.Guild.GetRole(ulong.Parse(_config["ids:beheerderrol"]));
+            bool role = (userToCheck as IGuildUser).Guild.Roles.Contains(adminRole);
+
+            if (!role)
+            {
+                await ReplyAsync("U heeft geen recht om dit commando uit te voeren!");
+                return;
+            }
+            else
+            {
+                SocketGuild guild = _client.GetGuild(ulong.Parse(_config["ids:server"]));
+
+                var channel = (SocketTextChannel) guild.Channels.FirstOrDefault(x => x.Name.Contains("niet-geverifieerd"));
+
+                if (channel == null)
+                {
+                    await ReplyAsync("Er is geen 'niet-geverifieerd' tekstkanaal gevonden!");
+                    return;
+                }
+                else
+                {
+                    await channel.SendMessageAsync("@everyone Vergeet niet om je te laten verifiëren! Lukt dit niet, contacteer dan een van de beheerders. Wij ruimen namelijk alle gebruikers van deze server op die zich nog niet hebben geverifieerd.");
+                }
             }
         }
     }
