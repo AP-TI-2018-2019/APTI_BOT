@@ -18,7 +18,7 @@ namespace APTI_BOT.Modules
             _client = client;
         }
 
-        [Command("contributors")]
+        [Command("botcontributors")]
         [Summary("Vraag de contributors van de Discord bot op.")]
         public async Task AskContributorsAsync()
         {
