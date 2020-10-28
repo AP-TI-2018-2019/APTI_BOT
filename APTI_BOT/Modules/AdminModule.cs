@@ -38,15 +38,12 @@ namespace APTI_BOT.Modules
             }
             else
             {
-
-                await Context.Guild.DownloadUsersAsync();
-                IReadOnlyCollection<SocketGuildUser> users = Context.Guild.Users;
+                SocketRole tiRole = Context.Guild.GetRole(ulong.Parse(_config["ids:toegepasteinformatierol"]));
+                SocketRole eictRole = Context.Guild.GetRole(ulong.Parse(_config["ids:elektronicaictrol"]));
+                var users = Context.Guild.Users;
 
                 foreach (SocketGuildUser user in users)
                 {
-                    SocketRole tiRole = Context.Guild.GetRole(ulong.Parse(_config["ids:toegepasteinformatierol"]));
-                    SocketRole eictRole = Context.Guild.GetRole(ulong.Parse(_config["ids:elektronicaictrol"]));
-
                     if (user == null || user.Nickname == null)
                     {
                         continue;
@@ -112,13 +109,10 @@ namespace APTI_BOT.Modules
             }
             else
             {
-                SocketGuild guild = _client.GetGuild(ulong.Parse(_config["ids:server"]));
 
+                SocketGuild guild = Context.Guild;
                 SocketTextChannel channel = (SocketTextChannel)guild.Channels.FirstOrDefault(x => x.Name.Contains("niet-geverifieerd"));
-
-                await Context.Guild.DownloadUsersAsync();
-                SocketRole _notVerifiedRole = Context.Guild.GetRole(ulong.Parse(_config["ids:nietgeverifieerdrol"]));
-                IEnumerable<SocketGuildUser> nonVerifiedUsers = Context.Guild.Users.Where(user => user.Roles.Contains(_notVerifiedRole));
+                SocketRole _notVerifiedRole = guild.GetRole(ulong.Parse(_config["ids:nietgeverifieerdrol"]));
 
                 if (channel == null)
                 {
@@ -128,8 +122,12 @@ namespace APTI_BOT.Modules
                 else
                 {
                     await channel.SendMessageAsync("@everyone Vergeet niet om je te laten verifiëren! Lukt dit niet, contacteer dan een van de beheerders. Wij ruimen namelijk alle gebruikers van deze server op die zich nog niet hebben geverifieerd.");
+
+                    var users = channel.Users;
+                    var nonVerifiedUsers = users.Where(user => user.Roles.Contains(_notVerifiedRole));
                     foreach (SocketGuildUser nonVerifiedUser in nonVerifiedUsers)
                     {
+                        Console.WriteLine("DM verstuurd!");
                         await nonVerifiedUser.SendMessageAsync($"Hey {nonVerifiedUser.Nickname}, ik wilde je even laten herinneren dat je je nog niet geverifieerd hebt in onze APTI-server. Probeer dit zo snel mogelijk te doen!");
                     }
                 }
