@@ -66,7 +66,8 @@ namespace APTI_BOT.Modules
                         text.Append(" De volgende stap is verifiëren dat je een échte AP student bent.");
                         text.Append(" Om dit te doen stuur je (**bij voorkeur**) een selfie van jou met jouw AP studentenkaart.");
                         text.Append(" Voor de studenten die nog geen studentenkaart hebben, is er de mogelijkheid om een screenshot van jouw iBaMaFlex dossier door te sturen. Let wel op dat de verificatie hiervan langer kan duren aangezien er op strengere wijze geverifieerd zal worden.");
-                        text.Append(" Zodra de verificatie is geslaagd, krijg je hier een bevestiging.");
+                        text.AppendLine(" Zodra de verificatie is geslaagd, krijg je hier een bevestiging.");
+                        text.Append("Opgepast: het verwijderen van jouw verificatie-afbeelding nog vóór uw verficatie is afgerond, wordt niet aangeraden. Zo kan de verificatie niet worden voltooid. Dit mag je doen nadat de verificatie is voltooid.");
                         await ReplyAsync(text.ToString());
                         await Context.User.SendFileAsync(@"../../../Assets/studentenkaart.png", "In geval van een selfie: Zorg ervoor dat jouw gezicht goed zichtbaar is en de tekst van je studentenkaart leesbaar is.");
                         await Context.User.SendFileAsync(@"../../../Assets/ibamaflex.png", "In geval van een screenshot van iBaMaFlex: Zorg ervoor dat je een screenshot neemt van dezelfde gegevens die hier worden getoond.");
