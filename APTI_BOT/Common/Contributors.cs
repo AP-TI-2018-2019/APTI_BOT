@@ -9,8 +9,8 @@ namespace APTI_BOT.Common
          * Contributors
          */
         private static readonly string DISCORD_CHARACTER = "@";
-        private static readonly string DISCORD_MAXIM = DISCORD_CHARACTER + "mixxamm (#7308)";
-        private static readonly string DISCORD_DANA = DISCORD_CHARACTER + "Ding Dong Gaming (#8988)";
+        private static readonly string DISCORD_MAXIM = DISCORD_CHARACTER + "mixxamm#7308";
+        private static readonly string DISCORD_DANA = DISCORD_CHARACTER + "Ding Dong Gaming#8988";
 
         public static readonly List<string> BOT_CONTRIBUTORS = new List<string> { DISCORD_MAXIM, DISCORD_DANA };
 
