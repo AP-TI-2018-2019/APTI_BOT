@@ -51,29 +51,31 @@ namespace APTI_BOT.Modules
                     });
 
                     System.Collections.Generic.IEnumerator<SocketRole> roles = _guild.GetUser(Context.User.Id).Roles.GetEnumerator();
-                    bool student = false;
+                    bool hasStudentRole = false;
                     while (roles.MoveNext())
                     {
                         if (roles.Current.Id == _studentRole.Id)
                         {
-                            student = true;
+                            hasStudentRole = true;
                         }
                     }
                     StringBuilder text = new StringBuilder();
                     text.Append($"Je nickname is ingesteld op {message}.");
-                    if (!student)
+                    if (!hasStudentRole)
                     {
                         text.Append(" De volgende stap is verifiëren dat je een échte AP student bent.");
-                        text.Append(" Om dit te doen stuur je een selfie met jouw AP studentenkaart.");
+                        text.Append(" Om dit te doen stuur je (**bij voorkeur**) een selfie van jou met jouw AP studentenkaart.");
+                        text.Append(" Voor de studenten die nog geen studentenkaart hebben, is er de mogelijkheid om een screenshot van jouw iBaMaFlex dossier door te sturen. Let wel op dat de verificatie hiervan langer kan duren aangezien er op strengere wijze geverifieerd zal worden.");
                         text.Append(" Zodra de verificatie is geslaagd, krijg je hier een bevestiging.");
                         await ReplyAsync(text.ToString());
-                        await Context.User.SendFileAsync(@"../../../Assets/studentenkaart.png", "Zorg ervoor dat jouw gezicht goed zichtbaar is en de tekst van je studentenkaart leesbaar is.");
+                        await Context.User.SendFileAsync(@"../../../Assets/studentenkaart.png", "In geval van een selfie: Zorg ervoor dat jouw gezicht goed zichtbaar is en de tekst van je studentenkaart leesbaar is.");
+                        await Context.User.SendFileAsync(@"../../../Assets/ibamaflex.png", "In geval van een screenshot van iBaMaFlex: Zorg ervoor dat je een screenshot neemt van dezelfde gegevens die hier worden getoond.");
                     }
                     else
                     {
                         text.Append(" De volgende stap is je jaar kiezen door te klikken op één (of meerdere) emoji onder dit bericht.");
                         text.Append(" Als je vakken moet meenemen, dan kan je ook het vorige jaar kiezen.");
-                        text.Append(" Als je geen kanalen meer wilt zien van een jaar, dan kan je gewoon opnieuw op de emoji ervan klikken.");
+                        text.Append(" Als je geen kanalen meer wil zien van een jaar, dan kan je gewoon opnieuw op de emoji ervan klikken.");
                         text.Append(" Als je jaar niet verandert, dan is de sessie van deze chat verlopen en moet je de sessie terug activeren door `!jaar` te typen.");
                         IUserMessage sent = await ReplyAsync(text.ToString());
                         await sent.AddReactionsAsync(Emojis.emojiJaren);
