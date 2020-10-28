@@ -1,4 +1,5 @@
-﻿using Discord.Commands;
+﻿using APTI_BOT.Common;
+using Discord.Commands;
 using Discord.WebSocket;
 using Microsoft.Extensions.Configuration;
 using System;
@@ -35,7 +36,7 @@ namespace APTI_BOT.Services
                 return;
             }
 
-            if (msg.Author.Id == _client.CurrentUser.Id)
+            if (msg.Author.Id == _client.CurrentUser.Id || !s.Author.IsAUser())
             {
                 return;     // Ignore self when checking commands
             }

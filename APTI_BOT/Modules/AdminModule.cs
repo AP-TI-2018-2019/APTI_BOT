@@ -40,7 +40,7 @@ namespace APTI_BOT.Modules
             {
                 SocketRole tiRole = Context.Guild.GetRole(ulong.Parse(_config["ids:toegepasteinformatierol"]));
                 SocketRole eictRole = Context.Guild.GetRole(ulong.Parse(_config["ids:elektronicaictrol"]));
-                var users = Context.Guild.Users;
+                IReadOnlyCollection<SocketGuildUser> users = Context.Guild.Users;
 
                 foreach (SocketGuildUser user in users)
                 {
@@ -123,8 +123,8 @@ namespace APTI_BOT.Modules
                 {
                     await channel.SendMessageAsync("@everyone Vergeet niet om je te laten verifiëren! Lukt dit niet, contacteer dan een van de beheerders. Wij ruimen namelijk alle gebruikers van deze server op die zich nog niet hebben geverifieerd.");
 
-                    var users = channel.Users;
-                    var nonVerifiedUsers = users.Where(user => user.Roles.Contains(_notVerifiedRole));
+                    IReadOnlyCollection<SocketGuildUser> users = channel.Users;
+                    IEnumerable<SocketGuildUser> nonVerifiedUsers = users.Where(user => user.Roles.Contains(_notVerifiedRole));
                     foreach (SocketGuildUser nonVerifiedUser in nonVerifiedUsers)
                     {
                         Console.WriteLine("DM verstuurd!");

@@ -4,7 +4,6 @@ using Discord.Commands;
 using Discord.WebSocket;
 using Microsoft.Extensions.Configuration;
 using System.Text;
-using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 
 namespace APTI_BOT.Modules
@@ -25,11 +24,6 @@ namespace APTI_BOT.Modules
         [Summary("Stel je bijnaam van de server in.")]
         public async Task ChangeNameAsync([Remainder] string message)
         {
-            if (!Context.User.IsAUser())
-            {
-                return;
-            }
-
             if (Context.IsPrivate)
             {
                 SocketGuild _guild = _client.GetGuild(ulong.Parse(_config["ids:server"]));
@@ -131,11 +125,6 @@ namespace APTI_BOT.Modules
         [Summary("Vraag de URL van onze site portaal op.")]
         public async Task AptiAsync()
         {
-            if (!Context.User.IsAUser())
-            {
-                return;
-            }
-
             await ReplyAsync($"{Urls.APTI_BASE_URL}", false, null);
         }
 
@@ -144,11 +133,6 @@ namespace APTI_BOT.Modules
         [Summary("Vraag de URL van onze YouTube channel op.")]
         public async Task YouTubeAsync()
         {
-            if (!Context.User.IsAUser())
-            {
-                return;
-            }
-
             await ReplyAsync($"{Urls.APTI_YOUTUBE_URL}", false, null);
         }
 
@@ -157,11 +141,6 @@ namespace APTI_BOT.Modules
         [Summary("Vraag de URL van onze GitHub Repository op.")]
         public async Task GitHubAsync()
         {
-            if (!Context.User.IsAUser())
-            {
-                return;
-            }
-
             await ReplyAsync($"{Urls.APTI_GITHUB_URL}", false, null);
         }
 
@@ -170,11 +149,6 @@ namespace APTI_BOT.Modules
         [Summary("Vraag de uitnodigingspagina van onze server op.")]
         public async Task DiscordAsync()
         {
-            if (!Context.User.IsAUser())
-            {
-                return;
-            }
-
             await ReplyAsync($"{Urls.APTI_DISCORD_URL}", false, null);
         }
     }

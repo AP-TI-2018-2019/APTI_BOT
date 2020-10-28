@@ -35,7 +35,7 @@ namespace APTI_BOT.Modules
             if (reaction.Emote.ToString().Equals(Emojis.PIN_EMOJI.ToString()))
             {
                 IReadOnlyCollection<Discord.Rest.RestMessage> pinnedMessages = await channel.GetPinnedMessagesAsync();
-                if (pinnedMessages.Count == PIN_LIMIT)
+                if (pinnedMessages.Count >= PIN_LIMIT)
                 {
                     await ((ISocketMessageChannel)_client.GetChannel(channel.Id)).SendMessageAsync($"Het maximaal aantal gepinde berichten is overschreden. Roep een @Beheerder om de gepinde berichten te herevalueren.", false, null);
                 }
