@@ -12,7 +12,7 @@ namespace APTI_BOT.Modules
     [Name("Reactie commando's")]
     public class ReactionModule : ModuleBase<SocketCommandContext>
     {
-
+        private const int PIN_LIMIT = 50;
         private readonly IConfigurationRoot _config;
         private readonly DiscordSocketClient _client;
 
@@ -35,7 +35,7 @@ namespace APTI_BOT.Modules
             if (reaction.Emote.ToString().Equals(Emojis.PIN_EMOJI.ToString()))
             {
                 IReadOnlyCollection<Discord.Rest.RestMessage> pinnedMessages = await channel.GetPinnedMessagesAsync();
-                if (pinnedMessages.Count == 50)
+                if (pinnedMessages.Count == PIN_LIMIT)
                 {
                     await ((ISocketMessageChannel)_client.GetChannel(channel.Id)).SendMessageAsync($"Het maximaal aantal gepinde berichten is overschreden. Roep een @Beheerder om de gepinde berichten te herevalueren.", false, null);
                 }
@@ -71,6 +71,7 @@ namespace APTI_BOT.Modules
                         .WithAuthor(messageToPin.Author.ToString(), messageToPin.Author.GetAvatarUrl(), messageToPin.GetJumpUrl())
                         .Build();
                         await ((ISocketMessageChannel)_client.GetChannel(ulong.Parse(_config["ids:pinlog"]))).SendMessageAsync("", false, embed);
+                        await ((ISocketMessageChannel)_client.GetChannel(channel.Id)).SendMessageAsync($"Er zijn in totaal {pinnedMessages.Count} gepinde berichten. Er kunnen nog {PIN_LIMIT - pinnedMessages.Count} berichten worden gepind.", false, null);
                     }
                 }
             }
