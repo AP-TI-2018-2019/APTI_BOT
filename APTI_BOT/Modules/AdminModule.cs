@@ -116,6 +116,10 @@ namespace APTI_BOT.Modules
 
                 SocketTextChannel channel = (SocketTextChannel)guild.Channels.FirstOrDefault(x => x.Name.Contains("niet-geverifieerd"));
 
+                await Context.Guild.DownloadUsersAsync();
+                SocketRole _notVerifiedRole = Context.Guild.GetRole(ulong.Parse(_config["ids:nietgeverifieerdrol"]));
+                IEnumerable<SocketGuildUser> nonVerifiedUsers = Context.Guild.Users.Where(user => user.Roles.Contains(_notVerifiedRole));
+
                 if (channel == null)
                 {
                     await ReplyAsync("Er is geen 'niet-geverifieerd' tekstkanaal gevonden!");
@@ -124,6 +128,10 @@ namespace APTI_BOT.Modules
                 else
                 {
                     await channel.SendMessageAsync("@everyone Vergeet niet om je te laten verifiëren! Lukt dit niet, contacteer dan een van de beheerders. Wij ruimen namelijk alle gebruikers van deze server op die zich nog niet hebben geverifieerd.");
+                    foreach (SocketGuildUser nonVerifiedUser in nonVerifiedUsers)
+                    {
+                        await nonVerifiedUser.SendMessageAsync($"Hey {nonVerifiedUser.Nickname}, ik wilde je even laten herinneren dat je je nog niet geverifieerd hebt in onze APTI-server. Probeer dit zo snel mogelijk te doen!");
+                    }
                 }
             }
         }
