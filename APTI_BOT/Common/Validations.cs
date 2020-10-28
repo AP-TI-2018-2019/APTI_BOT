@@ -1,4 +1,5 @@
 ﻿using Discord;
+using System.Text.RegularExpressions;
 
 namespace APTI_BOT.Common
 {
@@ -7,6 +8,11 @@ namespace APTI_BOT.Common
         public static bool IsAUser(this IUser user)
         {
             return !user.IsBot && !user.IsWebhook;
+        }
+
+        public static bool IsValidName(this string name)
+        {
+            return Regex.Match(name, "[a-zA-Z][a-z]+ - [1-3](TI|EICT)*").Success;
         }
     }
 }

@@ -36,9 +36,9 @@ namespace APTI_BOT.Modules
                 SocketRole _studentRole = _guild.GetRole(ulong.Parse(_config["ids:studentrol"]));
                 SocketRole _notVerifiedRole = _guild.GetRole(ulong.Parse(_config["ids:nietgeverifieerdrol"]));
 
-                if (!Regex.Match(message, "[a-zA-Z][a-z]+ - [1-3](TI|EICT)[A-Z]*").Success)
+                if (!message.IsValidName())
                 {
-                    await ReplyAsync("Je hebt je naam in een niet-geldig formaat ingevoerd. Gelieve het formaat te volgen.", false, null);
+                    await ReplyAsync("Je hebt je naam in een niet-geldig formaat ingevoerd. Gelieve het volgende formaat te volgen: `!naam Jouwnaam - (1-3)(TI/EICT)(1-9/A-Z)` te volgen.\nVoorbeeld 1: `!naam Dana - 3TIA`\nVoorbeeld 2: `!naam Kevin - 1EICTD`", false, null);
                     return;
                 }
                 message = message.Substring(0, 1).ToUpper() + message.Substring(1);
