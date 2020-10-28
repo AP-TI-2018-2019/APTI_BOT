@@ -45,11 +45,6 @@ namespace APTI_BOT.Modules
         [Summary("Start de setup procedure voor nieuwe (of bestaande) leden. Zo kan je uw naam en rol aanpassen en eenmalig uw identiteit.")]
         public async Task WelcomeCommandMessageAsync()
         {
-            if (!Context.User.IsAUser())
-            {
-                return;
-            }
-
             await Context.User.SendMessageAsync(GetWelcomeText());
 
             SocketGuild _guild = _client.GetGuild(ulong.Parse(_config["ids:server"]));

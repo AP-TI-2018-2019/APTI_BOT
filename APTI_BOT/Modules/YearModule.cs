@@ -24,11 +24,6 @@ namespace APTI_BOT.Modules
         [Summary("Stel je jaar van de server in.")]
         public async Task ChangeYearAsync()
         {
-            if (!Context.User.IsAUser())
-            {
-                return;
-            }
-
             if (Context.IsPrivate)
             {
                 System.Console.WriteLine("ChangeYearAsync");
