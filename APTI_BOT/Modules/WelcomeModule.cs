@@ -20,8 +20,8 @@ namespace APTI_BOT.Modules
         {
             _config = config;
             _client = client;
-            // _client.UserJoined += AnnounceJoinedUserAsync;
-            _client.MessageReceived += AnnounceJoinedUserMessageAsync;
+            _client.UserJoined += AnnounceJoinedUserAsync;
+            //_client.MessageReceived += AnnounceJoinedUserMessageAsync;
         }
 
         private async Task AnnounceJoinedUserMessageAsync(SocketMessage msg)
