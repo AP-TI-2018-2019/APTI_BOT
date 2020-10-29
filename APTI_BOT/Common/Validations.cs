@@ -7,6 +7,9 @@ namespace APTI_BOT.Common
     {
         public static bool IsAUser(this IUser user)
         {
+            if (user == null) return false;
+
+
             return !user.IsBot && !user.IsWebhook;
         }
 
