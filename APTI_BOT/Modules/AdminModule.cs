@@ -133,5 +133,28 @@ namespace APTI_BOT.Modules
                 }
             }
         }
+
+
+        [Command("downloadusers")]
+        [Summary("Laad alle gebruikers van de server in zodat de bot deftig kan worden.")]
+        [RequireUserPermission(GuildPermission.Administrator)]
+        public async Task DownloadAllUserDataAsync()
+        {
+            SocketGuildUser userToCheck = Context.User as SocketGuildUser;
+            SocketRole adminRole = Context.Guild.GetRole(ulong.Parse(_config["ids:beheerderrol"]));
+            bool role = (userToCheck as IGuildUser).Guild.Roles.Contains(adminRole);
+
+            if (!role)
+            {
+                await ReplyAsync("U heeft niet voldoende rechten om dit commando uit te voeren!");
+                return;
+            }
+            else
+            {
+                Console.WriteLine("Start user download...");
+                await Context.Guild.DownloadUsersAsync();
+                Console.WriteLine("Download completed.");
+            }
+        }
     }
 }
