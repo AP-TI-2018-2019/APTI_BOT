@@ -1,0 +1,19 @@
+﻿prefix: "!"
+tokens:
+	discord: 
+ids:
+    server: 
+    jaar1rol: 
+    jaar2rol: 
+    jaar3rol: 
+    studentrol: 
+    nietgeverifieerdrol: 
+    toegepasteinformatierol: 
+    elektronicaictrol: 
+    beheerderrol: 
+    pinlog: 
+    verificatielog: 
+    welkomlog: 
+    nietgeverifieerdlog: 
+    feedbacklog: 
+    studvertlog: 
