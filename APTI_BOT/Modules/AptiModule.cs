@@ -26,6 +26,7 @@ namespace APTI_BOT.Modules
         {
             if (Context.IsPrivate)
             {
+                System.Console.WriteLine("ChangeNameAsync");
                 SocketGuild _guild = _client.GetGuild(ulong.Parse(_config["ids:server"]));
                 SocketRole _studentRole = _guild.GetRole(ulong.Parse(_config["ids:studentrol"]));
                 SocketRole _notVerifiedRole = _guild.GetRole(ulong.Parse(_config["ids:nietgeverifieerdrol"]));
@@ -125,6 +126,7 @@ namespace APTI_BOT.Modules
         [Summary("Vraag de URL van onze site portaal op.")]
         public async Task AptiAsync()
         {
+            System.Console.WriteLine("AptiAsync");
             await ReplyAsync($"{Urls.APTI_BASE_URL}", false, null);
         }
 
@@ -133,6 +135,7 @@ namespace APTI_BOT.Modules
         [Summary("Vraag de URL van onze YouTube channel op.")]
         public async Task YouTubeAsync()
         {
+            System.Console.WriteLine("YouTubeAsync");
             await ReplyAsync($"{Urls.APTI_YOUTUBE_URL}", false, null);
         }
 
@@ -141,6 +144,7 @@ namespace APTI_BOT.Modules
         [Summary("Vraag de URL van onze GitHub Repository op.")]
         public async Task GitHubAsync()
         {
+            System.Console.WriteLine("GitHubAsync");
             await ReplyAsync($"{Urls.APTI_GITHUB_URL}", false, null);
         }
 
@@ -149,6 +153,7 @@ namespace APTI_BOT.Modules
         [Summary("Vraag de uitnodigingspagina van onze server op.")]
         public async Task DiscordAsync()
         {
+            System.Console.WriteLine("DiscordAsync");
             await ReplyAsync($"{Urls.APTI_DISCORD_URL}", false, null);
         }
     }

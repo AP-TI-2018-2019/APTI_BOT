@@ -43,21 +43,21 @@ namespace APTI_BOT.Modules
             {
                 System.Console.WriteLine("RemoveYearAsync");
 
-                SocketGuild _guild = _client.GetGuild(ulong.Parse(_config["ids:server"]));
+                SocketGuild guild = _client.GetGuild(ulong.Parse(_config["ids:server"]));
                 SocketRole role;
 
                 if (reaction.Emote.Equals(Emojis.JAAR_1_EMOJI))
                 {
-                    role = _guild.GetRole(ulong.Parse(_config["ids:jaar1rol"]));
+                    role = guild.GetRole(ulong.Parse(_config["ids:jaar1rol"]));
                 }
                 else if (reaction.Emote.Equals(Emojis.JAAR_2_EMOJI))
                 {
-                    role = _guild.GetRole(ulong.Parse(_config["ids:jaar2rol"]));
+                    role = guild.GetRole(ulong.Parse(_config["ids:jaar2rol"]));
                 }
 
                 else if (reaction.Emote.Equals(Emojis.JAAR_3_EMOJI))
                 {
-                    role = _guild.GetRole(ulong.Parse(_config["ids:jaar3rol"]));
+                    role = guild.GetRole(ulong.Parse(_config["ids:jaar3rol"]));
                 }
                 else
                 {
@@ -66,7 +66,7 @@ namespace APTI_BOT.Modules
 
                 if (role != null)
                 {
-                    await _guild.GetUser(reaction.UserId).RemoveRoleAsync(role);
+                    await guild.GetUser(reaction.UserId).RemoveRoleAsync(role);
                 }
             }
         }
