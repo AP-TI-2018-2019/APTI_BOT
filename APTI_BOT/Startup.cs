@@ -46,12 +46,14 @@ namespace APTI_BOT
             services.AddSingleton(new DiscordSocketClient(new DiscordSocketConfig
             {                                       // Add discord to the collection
                 LogLevel = LogSeverity.Verbose,     // Tell the logger to give Verbose amount of info
-                MessageCacheSize = 1000             // Cache 1,000 messages per channel
+                MessageCacheSize = 1000,             // Cache 1,000 messages per channel
+                DefaultRetryMode = RetryMode.RetryRatelimit,
             }))
             .AddSingleton(new CommandService(new CommandServiceConfig
             {                                       // Add the command service to the collection
                 LogLevel = LogSeverity.Verbose,     // Tell the logger to give Verbose amount of info
                 DefaultRunMode = RunMode.Async,     // Force all commands to run async by default
+                CaseSensitiveCommands = false,
             }))
             .AddSingleton<CommandHandler>()         // Add the command handler to the collection
             .AddSingleton<StartupService>()         // Add startupservice to the collection

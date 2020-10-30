@@ -19,11 +19,6 @@ namespace APTI_BOT.Modules
         [Summary("Laat de bot je iets herinneren door een bericht en een datum mee te geven, bv. '!herinner mij om de planten buiten te zetten op 15/10/2020'.")]
         public async Task RemindAsync([Remainder] string bericht)
         {
-            if (!Context.User.IsAUser())
-            {
-                return;
-            }
-
             string[] splitsing = bericht.Split("op");
             string boodschap = splitsing[0];
 
@@ -61,11 +56,6 @@ namespace APTI_BOT.Modules
         [Summary("Vraag de datum van vandaag op.")]
         public async Task AskDateAsync()
         {
-            if (!Context.User.IsAUser())
-            {
-                return;
-            }
-
             await ReplyAsync($"{DateTime.Today.ToShortDateString()}", false, null);
         }
 
@@ -74,11 +64,6 @@ namespace APTI_BOT.Modules
         [Summary("Vraag de tijd van vandaag op.")]
         public async Task AskTimeAsync()
         {
-            if (!Context.User.IsAUser())
-            {
-                return;
-            }
-
             await ReplyAsync($"{DateTime.Now.ToShortTimeString()}", false, null);
         }
 
@@ -86,10 +71,6 @@ namespace APTI_BOT.Modules
         [Summary("Vraag de datum en tijd van vandaag op.")]
         public async Task AskDateTimeAsync()
         {
-            if (!Context.User.IsAUser())
-            {
-                return;
-            }
 
             await ReplyAsync($"{DateTime.Now.ToShortTimeString()}", false, null);
         }
@@ -98,11 +79,6 @@ namespace APTI_BOT.Modules
         [Summary("Ping Pong Effect")]
         public async Task ApTiAsync()
         {
-            if (!Context.User.IsAUser())
-            {
-                return;
-            }
-
             await ReplyAsync($"ti!", false, null);
         }
 
@@ -110,11 +86,6 @@ namespace APTI_BOT.Modules
         [Summary("Ping Pong Effect")]
         public async Task PingPongAsync()
         {
-            if (!Context.User.IsAUser())
-            {
-                return;
-            }
-
             await ReplyAsync($"pong!", false, null);
         }
     }

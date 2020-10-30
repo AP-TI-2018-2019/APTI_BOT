@@ -38,15 +38,12 @@ namespace APTI_BOT.Modules
             }
             else
             {
-
-                await Context.Guild.DownloadUsersAsync();
+                SocketRole tiRole = Context.Guild.GetRole(ulong.Parse(_config["ids:toegepasteinformatierol"]));
+                SocketRole eictRole = Context.Guild.GetRole(ulong.Parse(_config["ids:elektronicaictrol"]));
                 IReadOnlyCollection<SocketGuildUser> users = Context.Guild.Users;
 
                 foreach (SocketGuildUser user in users)
                 {
-                    SocketRole tiRole = Context.Guild.GetRole(ulong.Parse(_config["ids:toegepasteinformatierol"]));
-                    SocketRole eictRole = Context.Guild.GetRole(ulong.Parse(_config["ids:elektronicaictrol"]));
-
                     if (user == null || user.Nickname == null)
                     {
                         continue;
@@ -112,9 +109,10 @@ namespace APTI_BOT.Modules
             }
             else
             {
-                SocketGuild guild = _client.GetGuild(ulong.Parse(_config["ids:server"]));
 
+                SocketGuild guild = Context.Guild;
                 SocketTextChannel channel = (SocketTextChannel)guild.Channels.FirstOrDefault(x => x.Name.Contains("niet-geverifieerd"));
+                SocketRole _notVerifiedRole = guild.GetRole(ulong.Parse(_config["ids:nietgeverifieerdrol"]));
 
                 if (channel == null)
                 {
@@ -124,7 +122,38 @@ namespace APTI_BOT.Modules
                 else
                 {
                     await channel.SendMessageAsync("@everyone Vergeet niet om je te laten verifiëren! Lukt dit niet, contacteer dan een van de beheerders. Wij ruimen namelijk alle gebruikers van deze server op die zich nog niet hebben geverifieerd.");
+
+                    IReadOnlyCollection<SocketGuildUser> users = channel.Users;
+                    IEnumerable<SocketGuildUser> nonVerifiedUsers = users.Where(user => user.Roles.Contains(_notVerifiedRole));
+                    foreach (SocketGuildUser nonVerifiedUser in nonVerifiedUsers)
+                    {
+                        Console.WriteLine("DM verstuurd!");
+                        await nonVerifiedUser.SendMessageAsync($"Hey {nonVerifiedUser.Nickname}, ik wilde je even laten herinneren dat je je nog niet geverifieerd hebt in onze APTI-server. Probeer dit zo snel mogelijk te doen!");
+                    }
                 }
+            }
+        }
+
+
+        [Command("downloadusers")]
+        [Summary("Laad alle gebruikers van de server in zodat de bot deftig kan worden.")]
+        [RequireUserPermission(GuildPermission.Administrator)]
+        public async Task DownloadAllUserDataAsync()
+        {
+            SocketGuildUser userToCheck = Context.User as SocketGuildUser;
+            SocketRole adminRole = Context.Guild.GetRole(ulong.Parse(_config["ids:beheerderrol"]));
+            bool role = (userToCheck as IGuildUser).Guild.Roles.Contains(adminRole);
+
+            if (!role)
+            {
+                await ReplyAsync("U heeft niet voldoende rechten om dit commando uit te voeren!");
+                return;
+            }
+            else
+            {
+                Console.WriteLine("Start user download...");
+                await Context.Guild.DownloadUsersAsync();
+                Console.WriteLine("Download completed.");
             }
         }
     }

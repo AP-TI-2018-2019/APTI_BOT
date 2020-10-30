@@ -92,7 +92,8 @@ namespace APTI_BOT.Modules
 
                         StringBuilder text = new StringBuilder();
                         text.Append("Jouw inzending werd zojuist goedgekeurd.");
-                        text.Append(" De volgende stap is je jaar kiezen door te klikken op één (of meerdere) emoji onder dit bericht.");
+                        text.Append(" Indien gewenst heb je nu de mogelijkheid om jouw verificatie-afbeelding te verwijderen.");
+                        text.Append(" De volgende stap is het kiezen van jouw jaar  door te klikken op één (of meerdere) emoji onder dit bericht.");
                         text.Append(" Als je vakken moet meenemen, dan kan je ook het vorige jaar kiezen.");
                         text.Append(" Als je geen kanalen meer wilt zien van een jaar, dan kan je gewoon opnieuw op de emoji ervan klikken.");
                         text.Append(" Als je jaar niet verandert, dan is de sessie van deze chat verlopen en moet je de sessie terug activeren door `!jaar` te typen.");

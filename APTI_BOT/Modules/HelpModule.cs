@@ -1,5 +1,4 @@
-﻿using APTI_BOT.Common;
-using Discord;
+﻿using Discord;
 using Discord.Commands;
 using Microsoft.Extensions.Configuration;
 using System.Linq;
@@ -26,11 +25,6 @@ namespace APTI_BOT.Modules
         [Summary("Samenvattingstabel van alle commando's van de APTI-bot.")]
         public async Task HelpAsync()
         {
-            if (!Context.User.IsAUser())
-            {
-                return;
-            }
-
             EmbedBuilder builder = new EmbedBuilder()
             {
                 Color = new Color(114, 137, 218),
@@ -67,11 +61,6 @@ namespace APTI_BOT.Modules
         [Summary("Samenvattingstabel van alle commando's die met het ingevoerde woord beginnen.")]
         public async Task HelpAsync(string commando)
         {
-            if (!Context.User.IsAUser())
-            {
-                return;
-            }
-
             SearchResult result = _service.Search(Context, commando);
 
             if (!result.IsSuccess)
