@@ -17,10 +17,11 @@ namespace APTI_BOT.Modules
         [Command("herinner mij om")]
         [Alias("herinner me om", "herinner om")]
         [Summary("Laat de bot je iets herinneren door een bericht en een datum mee te geven, bv. '!herinner mij om de planten buiten te zetten op 15/10/2020'.")]
-        public async Task RemindAsync([Remainder] string bericht)
+        public async Task RemindMeToAsync([Remainder] string bericht)
         {
+            Console.WriteLine("RemindMeToAsync");
             string[] splitsing = bericht.Split("op");
-            string boodschap = splitsing[0];
+            string message = splitsing[0];
 
             if (!DateTime.TryParse(splitsing[1], out DateTime datum))
             {
@@ -32,23 +33,23 @@ namespace APTI_BOT.Modules
             }
             else
             {
-                await ReplyAsync($"Oké: ik zal '{boodschap}' naar je sturen op {datum}", false, null);
+                await ReplyAsync($"Oké: ik zal '{message}' naar je sturen op {datum}", false, null);
 
                 Timer timer = new Timer((datum - DateTime.Now).TotalMilliseconds);
-                timer.Elapsed += async (sender, e) => await NotifyUserAsync(sender, e, Context.User, boodschap);
+                timer.Elapsed += async (sender, e) => await NotifyUserAsync(sender, e, Context.User, message);
                 timer.Enabled = true;
                 timer.AutoReset = false;
             }
         }
 
-        private async Task NotifyUserAsync(object sender, ElapsedEventArgs e, SocketUser user, string boodschap)
+        private async Task NotifyUserAsync(object sender, ElapsedEventArgs e, SocketUser user, string message)
         {
             if (!Context.User.IsAUser())
             {
                 return;
             }
 
-            await ReplyAsync($"{user.Mention}, ik moest je er aan herinneren om {boodschap}", false, null);
+            await ReplyAsync($"{user.Mention}, ik moest je er aan herinneren om {message}", false, null);
         }
 
         [Command("date")]
@@ -56,6 +57,7 @@ namespace APTI_BOT.Modules
         [Summary("Vraag de datum van vandaag op.")]
         public async Task AskDateAsync()
         {
+            Console.WriteLine("AskDateAsync");
             await ReplyAsync($"{DateTime.Today.ToShortDateString()}", false, null);
         }
 
@@ -64,6 +66,7 @@ namespace APTI_BOT.Modules
         [Summary("Vraag de tijd van vandaag op.")]
         public async Task AskTimeAsync()
         {
+            Console.WriteLine("AskTimeAsync");
             await ReplyAsync($"{DateTime.Now.ToShortTimeString()}", false, null);
         }
 
@@ -71,7 +74,7 @@ namespace APTI_BOT.Modules
         [Summary("Vraag de datum en tijd van vandaag op.")]
         public async Task AskDateTimeAsync()
         {
-
+            Console.WriteLine("AskDateTimeAsync");
             await ReplyAsync($"{DateTime.Now.ToShortTimeString()}", false, null);
         }
 
@@ -79,6 +82,7 @@ namespace APTI_BOT.Modules
         [Summary("Ping Pong Effect")]
         public async Task ApTiAsync()
         {
+            Console.WriteLine("ApTiAsync");
             await ReplyAsync($"ti!", false, null);
         }
 
@@ -86,6 +90,7 @@ namespace APTI_BOT.Modules
         [Summary("Ping Pong Effect")]
         public async Task PingPongAsync()
         {
+            Console.WriteLine("PingPongAsync");
             await ReplyAsync($"pong!", false, null);
         }
     }

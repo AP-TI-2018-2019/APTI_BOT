@@ -26,19 +26,19 @@ namespace APTI_BOT.Modules
 
         private async Task AnnounceJoinedUserMessageAsync(SocketMessage msg)
         {
-            SocketGuild _guild = _client.GetGuild(ulong.Parse(_config["ids:server"]));
-            var channel = _guild.GetChannel(ulong.Parse(_config["ids:welkomlog"]));
+            SocketGuild guild = _client.GetGuild(ulong.Parse(_config["ids:server"]));
+            SocketGuildChannel channel = guild.GetChannel(ulong.Parse(_config["ids:welkomlog"]));
             if (msg.Source.Equals(MessageSource.System) && msg.Channel.Equals(channel))
             {
                 await msg.Author.SendMessageAsync(GetWelcomeText());
 
-                SocketRole _studentRole = _guild.GetRole(ulong.Parse(_config["ids:studentrol"]));
-                SocketRole _notVerifiedRole = _guild.GetRole(ulong.Parse(_config["ids:nietgeverifieerdrol"]));
-                var guildUser = _guild.GetUser(msg.Author.Id);
-                
-                if (!guildUser.Roles.Contains(_studentRole))
+                SocketRole studentRole = guild.GetRole(ulong.Parse(_config["ids:studentrol"]));
+                SocketRole notVerifiedRole = guild.GetRole(ulong.Parse(_config["ids:nietgeverifieerdrol"]));
+                SocketGuildUser guildUser = guild.GetUser(msg.Author.Id);
+
+                if (!guildUser.Roles.Contains(studentRole))
                 {
-                    await guildUser.AddRoleAsync(_notVerifiedRole);
+                    await guildUser.AddRoleAsync(notVerifiedRole);
                 }
             }
         }
@@ -50,14 +50,16 @@ namespace APTI_BOT.Modules
                 return;
             }
 
+            Console.WriteLine("AnnounceJoinedUserAsync");
             await arg.SendMessageAsync(GetWelcomeText());
 
-            SocketGuild _guild = _client.GetGuild(ulong.Parse(_config["ids:server"]));
-            SocketRole _studentRole = _guild.GetRole(ulong.Parse(_config["ids:studentrol"]));
-            SocketRole _notVerifiedRole = _guild.GetRole(ulong.Parse(_config["ids:nietgeverifieerdrol"]));
-            if (!arg.Roles.Contains(_studentRole))
+            SocketGuild guild = _client.GetGuild(ulong.Parse(_config["ids:server"]));
+            SocketTextChannel welcomeChannel = guild.GetTextChannel(ulong.Parse(_config["ids:welkomlog"]));
+            SocketRole studentRole = guild.GetRole(ulong.Parse(_config["ids:studentrol"]));
+            SocketRole notVerifiedRole = guild.GetRole(ulong.Parse(_config["ids:nietgeverifieerdrol"]));
+            if (!arg.Roles.Contains(studentRole))
             {
-                await arg.AddRoleAsync(_notVerifiedRole);
+                await arg.AddRoleAsync(notVerifiedRole);
             }
         }
 
@@ -65,14 +67,15 @@ namespace APTI_BOT.Modules
         [Summary("Start de setup procedure voor nieuwe (of bestaande) leden. Zo kan je uw naam en rol aanpassen en eenmalig uw identiteit.")]
         public async Task WelcomeCommandMessageAsync()
         {
+            Console.WriteLine("WelcomeCommandMessageAsync");
             await Context.User.SendMessageAsync(GetWelcomeText());
 
-            SocketGuild _guild = _client.GetGuild(ulong.Parse(_config["ids:server"]));
-            SocketRole _studentRole = _guild.GetRole(ulong.Parse(_config["ids:studentrol"]));
-            SocketRole _notVerifiedRole = _guild.GetRole(ulong.Parse(_config["ids:nietgeverifieerdrol"]));
-            if (!_guild.GetUser(Context.User.Id).Roles.Contains(_studentRole))
+            SocketGuild guild = _client.GetGuild(ulong.Parse(_config["ids:server"]));
+            SocketRole studentRole = guild.GetRole(ulong.Parse(_config["ids:studentrol"]));
+            SocketRole notVerifiedRole = guild.GetRole(ulong.Parse(_config["ids:nietgeverifieerdrol"]));
+            if (!guild.GetUser(Context.User.Id).Roles.Contains(studentRole))
             {
-                await _guild.GetUser(Context.User.Id).AddRoleAsync(_notVerifiedRole);
+                await guild.GetUser(Context.User.Id).AddRoleAsync(notVerifiedRole);
             }
         }
 

@@ -48,6 +48,7 @@ namespace APTI_BOT
                 LogLevel = LogSeverity.Verbose,     // Tell the logger to give Verbose amount of info
                 MessageCacheSize = 1000,             // Cache 1,000 messages per channel
                 DefaultRetryMode = RetryMode.RetryRatelimit,
+                AlwaysDownloadUsers = true,
             }))
             .AddSingleton(new CommandService(new CommandServiceConfig
             {                                       // Add the command service to the collection

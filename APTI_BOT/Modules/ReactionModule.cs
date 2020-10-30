@@ -34,6 +34,7 @@ namespace APTI_BOT.Modules
 
             if (reaction.Emote.ToString().Equals(Emojis.PIN_EMOJI.ToString()))
             {
+                Console.WriteLine("PinAsync");
                 IReadOnlyCollection<Discord.Rest.RestMessage> pinnedMessages = await channel.GetPinnedMessagesAsync();
                 if (pinnedMessages.Count >= PIN_LIMIT)
                 {

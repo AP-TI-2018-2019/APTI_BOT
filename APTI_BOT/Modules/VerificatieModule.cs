@@ -36,7 +36,7 @@ namespace APTI_BOT.Modules
 
             if (message.Channel is IPrivateChannel && message.Source == MessageSource.User && message.Attachments.Count > 0)
             {
-                // Verificatie ding
+                Console.WriteLine("I'm making another embed!");
                 EmbedBuilder embedBuilder = new EmbedBuilder().WithTitle("Verificatie student");
                 foreach (IAttachment attachment in message.Attachments)
                 {
@@ -56,7 +56,6 @@ namespace APTI_BOT.Modules
                     .WithFooter(footer => footer.WithText($"Account gecreëerd op: {message.Author.CreatedAt}"))
                     .WithTimestamp(DateTime.Now.ToLocalTime())
                     .Build();
-                Console.WriteLine("I'm making another embed!");
                 SocketGuild _guild = _client.GetGuild(ulong.Parse(_config["ids:server"]));
                 ISocketMessageChannel verificationLogChannel = ((ISocketMessageChannel)_guild.GetChannel(ulong.Parse(_config["ids:verificatielog"])));
                 RestUserMessage verificationEmbed = await verificationLogChannel.SendMessageAsync("", false, embed);

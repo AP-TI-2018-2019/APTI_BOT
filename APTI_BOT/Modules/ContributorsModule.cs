@@ -22,6 +22,7 @@ namespace APTI_BOT.Modules
         [Summary("Vraag de contributors van de Discord bot op.")]
         public async Task AskContributorsAsync()
         {
+            System.Console.WriteLine("AskContributorsAsync");
             await ReplyAsync($"{Contributors.GetContributors()}", false, null);
         }
     }

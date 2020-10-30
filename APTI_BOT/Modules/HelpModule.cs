@@ -25,6 +25,7 @@ namespace APTI_BOT.Modules
         [Summary("Samenvattingstabel van alle commando's van de APTI-bot.")]
         public async Task HelpAsync()
         {
+            System.Console.WriteLine("HelpAsync");
             EmbedBuilder builder = new EmbedBuilder()
             {
                 Color = new Color(114, 137, 218),
@@ -69,7 +70,7 @@ namespace APTI_BOT.Modules
             }
             else
             {
-
+                System.Console.WriteLine("HelpAsync(commando)");
                 EmbedBuilder builder = new EmbedBuilder()
                 {
                     Color = new Color(114, 137, 218),
