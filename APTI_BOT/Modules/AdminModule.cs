@@ -138,7 +138,7 @@ namespace APTI_BOT.Modules
 
 
         [Command("downloadusers")]
-        [Summary("Laad alle gebruikers van de server in zodat de bot deftig kan worden.")]
+        [Summary("Laad alle gebruikers van de server in zodat de botcommando's deftig functioneren.")]
         [RequireUserPermission(GuildPermission.Administrator)]
         public async Task DownloadAllUserDataAsync()
         {
