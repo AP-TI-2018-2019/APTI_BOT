@@ -75,7 +75,7 @@ namespace APTI_BOT.Modules
         public async Task AskDateTimeAsync()
         {
             Console.WriteLine("AskDateTimeAsync");
-            await ReplyAsync($"{DateTime.Now.ToShortTimeString()}", false, null);
+            await ReplyAsync($"{DateTime.Now}", false, null);
         }
 
         [Command("ap")]
