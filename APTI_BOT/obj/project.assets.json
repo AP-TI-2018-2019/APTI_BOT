@@ -2373,19 +2373,23 @@
     ]
   },
   "packageFolders": {
-    "C:\\Users\\maxim\\.nuget\\packages\\": {}
+    "C:\\Users\\danai\\.nuget\\packages\\": {},
+    "C:\\Program Files\\dotnet\\sdk\\NuGetFallbackFolder": {}
   },
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "C:\\Users\\maxim\\Source\\Repos\\APTI_BOT\\APTI_BOT\\APTI_BOT.csproj",
+      "projectUniqueName": "D:\\Users\\danai\\Documents\\GitHub\\APTI_BOT\\APTI_BOT\\APTI_BOT.csproj",
       "projectName": "APTI_BOT",
-      "projectPath": "C:\\Users\\maxim\\Source\\Repos\\APTI_BOT\\APTI_BOT\\APTI_BOT.csproj",
-      "packagesPath": "C:\\Users\\maxim\\.nuget\\packages\\",
-      "outputPath": "C:\\Users\\maxim\\Source\\Repos\\APTI_BOT\\APTI_BOT\\obj\\",
+      "projectPath": "D:\\Users\\danai\\Documents\\GitHub\\APTI_BOT\\APTI_BOT\\APTI_BOT.csproj",
+      "packagesPath": "C:\\Users\\danai\\.nuget\\packages\\",
+      "outputPath": "D:\\Users\\danai\\Documents\\GitHub\\APTI_BOT\\APTI_BOT\\obj\\",
       "projectStyle": "PackageReference",
+      "fallbackFolders": [
+        "C:\\Program Files\\dotnet\\sdk\\NuGetFallbackFolder"
+      ],
       "configFilePaths": [
-        "C:\\Users\\maxim\\AppData\\Roaming\\NuGet\\NuGet.Config",
+        "C:\\Users\\danai\\AppData\\Roaming\\NuGet\\NuGet.Config",
         "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
       ],
       "originalTargetFrameworks": [
@@ -2453,7 +2457,7 @@
             "privateAssets": "all"
           }
         },
-        "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\3.1.402\\RuntimeIdentifierGraph.json"
+        "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\3.1.403\\RuntimeIdentifierGraph.json"
       }
     }
   }
