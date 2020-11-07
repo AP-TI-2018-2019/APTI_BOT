@@ -72,7 +72,6 @@ namespace APTI_BOT.Modules
                         .WithAuthor(messageToPin.Author.ToString(), messageToPin.Author.GetAvatarUrl(), messageToPin.GetJumpUrl())
                         .Build();
                         await ((ISocketMessageChannel)_client.GetChannel(ulong.Parse(_config["ids:pinlog"]))).SendMessageAsync("", false, embed);
-                        await ((ISocketMessageChannel)_client.GetChannel(channel.Id)).SendMessageAsync($"Er zijn in totaal {pinnedMessages.Count + 1} gepinde berichten. Er kunnen nog {PIN_LIMIT - pinnedMessages.Count - 1} berichten worden gepind.", false, null);
                     }
                 }
             }
