@@ -113,7 +113,7 @@ namespace APTI_BOT.Modules
                         await user.AddRoleAsync(eictRole);
                         await user.RemoveRoleAsync(tiRole);
                     }
-                    else if (message.Contains("TI"))
+                    else if (message.Contains("TI") || message.Contains("IT"))
                     {
                         await user.AddRoleAsync(tiRole);
                         await user.RemoveRoleAsync(eictRole);
