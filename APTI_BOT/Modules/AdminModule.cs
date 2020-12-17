@@ -55,7 +55,7 @@ namespace APTI_BOT.Modules
                         await user.AddRoleAsync(eictRole);
                         await user.RemoveRoleAsync(tiRole);
                     }
-                    else if (user.Nickname.Contains("TI"))
+                    else if (user.Nickname.Contains("TI") || user.Nickname.Contains("IT"))
                     {
                         await user.AddRoleAsync(tiRole);
                         await user.RemoveRoleAsync(eictRole);
