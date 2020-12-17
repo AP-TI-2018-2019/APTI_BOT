@@ -17,7 +17,7 @@ namespace APTI_BOT.Common
 
         public static bool IsValidName(this string name)
         {
-            return Regex.Match(name, "[a-zA-Z][a-z]+ - [1-3](TI|EICT)[A-Z1-9]?").Success;
+            return Regex.Match(name, "[a-zA-Z][a-z]+ - [1-3](TI|EICT|IT)[A-Z1-9]?").Success;
         }
     }
 }
