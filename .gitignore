@@ -1,6 +1,7 @@
 config.json
 config_apti.json
 _config.yml
+app.log
 
 ## Niets
 ## Ignore Visual Studio temporary files, build results, and
@@ -20,6 +21,9 @@ _config.yml
 
 # Mono auto generated files
 mono_crash.*
+
+# IntelliJ
+.idea/
 
 # Build results
 [Dd]ebug/
