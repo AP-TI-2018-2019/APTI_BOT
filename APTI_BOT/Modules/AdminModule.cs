@@ -1,19 +1,19 @@
-﻿using Discord;
-using Discord.Commands;
-using Discord.WebSocket;
-using Microsoft.Extensions.Configuration;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Discord;
+using Discord.Commands;
+using Discord.WebSocket;
+using Microsoft.Extensions.Configuration;
 
 namespace APTI_BOT.Modules
 {
     [Name("Admin commando's")]
     public class AdminModule : ModuleBase<SocketCommandContext>
     {
-        private readonly IConfigurationRoot _config;
         private readonly DiscordSocketClient _client;
+        private readonly IConfigurationRoot _config;
 
         public AdminModule(IConfigurationRoot config, DiscordSocketClient client)
         {
@@ -23,76 +23,72 @@ namespace APTI_BOT.Modules
 
 
         [Command("corrigeerrichtingen")]
-        [Summary("Geeft alle bestaande gebruikers automatisch de juiste richting op basis van hun naam. OPGELET: gebruik dit zuinig en enkel als dit uw laatste keuze is.")]
+        [Summary(
+            "Geeft alle bestaande gebruikers automatisch de juiste richting op basis van hun naam. OPGELET: gebruik dit zuinig en enkel als dit uw laatste keuze is.")]
         [RequireUserPermission(GuildPermission.Administrator)]
         public async Task CorrectUserRolesByCourseAsync()
         {
-            SocketGuildUser userToCheck = Context.User as SocketGuildUser;
-            SocketRole adminRole = Context.Guild.GetRole(ulong.Parse(_config["ids:beheerderrol"]));
-            bool hasAdminRole = (userToCheck as IGuildUser).Guild.Roles.Contains(adminRole);
+            var userToCheck = Context.User as SocketGuildUser;
+            var adminRole = Context.Guild.GetRole(ulong.Parse(_config["ids:beheerderrol"]));
+            var hasAdminRole = (userToCheck as IGuildUser).Guild.Roles.Contains(adminRole);
 
             if (!hasAdminRole)
             {
                 await ReplyAsync("U heeft niet voldoende rechten om dit commando uit te voeren!");
                 return;
             }
-            else
+
+            Console.WriteLine("CorrectUserRolesByCourseAsync");
+            var tiRole = Context.Guild.GetRole(ulong.Parse(_config["ids:toegepasteinformatierol"]));
+            var eictRole = Context.Guild.GetRole(ulong.Parse(_config["ids:elektronicaictrol"]));
+            var proRole = Context.Guild.GetRole(ulong.Parse(_config["ids:programmerenrol"]));
+            var users = Context.Guild.Users;
+
+            foreach (var user in users)
             {
-                Console.WriteLine("CorrectUserRolesByCourseAsync");
-                SocketRole tiRole = Context.Guild.GetRole(ulong.Parse(_config["ids:toegepasteinformatierol"]));
-                SocketRole eictRole = Context.Guild.GetRole(ulong.Parse(_config["ids:elektronicaictrol"]));
-                IReadOnlyCollection<SocketGuildUser> users = Context.Guild.Users;
+                if (user?.Nickname == null) continue;
 
-                foreach (SocketGuildUser user in users)
+                if (user.Nickname.Contains("EICT"))
                 {
-                    if (user == null || user.Nickname == null)
-                    {
-                        continue;
-                    }
-
-                    if (user.Nickname.Contains("EICT"))
-                    {
-                        await user.AddRoleAsync(eictRole);
-                        await user.RemoveRoleAsync(tiRole);
-                    }
-                    else if (user.Nickname.Contains("TI") || user.Nickname.Contains("IT"))
-                    {
-                        await user.AddRoleAsync(tiRole);
-                        await user.RemoveRoleAsync(eictRole);
-                    }
+                    await user.AddRoleAsync(eictRole);
+                    await user.RemoveRolesAsync(new List<IRole> {tiRole, proRole});
+                }
+                else if (user.Nickname.Contains("TI") || user.Nickname.Contains("IT"))
+                {
+                    await user.AddRoleAsync(tiRole);
+                    await user.RemoveRolesAsync(new List<IRole> {eictRole, proRole});
+                }
+                else if (user.Nickname.Contains("PRO"))
+                {
+                    await user.AddRoleAsync(proRole);
+                    await user.RemoveRolesAsync(new List<IRole> {eictRole, tiRole});
                 }
             }
         }
 
-        [Command("reminder")]
+        [Command("botmessage")]
         [Summary("Laat de bot een bericht schrijven in een bepaald kanaal.")]
         [RequireUserPermission(GuildPermission.Administrator)]
-        public async Task MakeReminderAsync(ulong channelId, [Remainder] string text)
+        public async Task LetBotMessageAsync(ulong channelId, [Remainder] string text)
         {
-            SocketGuildUser userToCheck = Context.User as SocketGuildUser;
-            SocketRole adminRole = Context.Guild.GetRole(ulong.Parse(_config["ids:beheerderrol"]));
-            bool hasAdminRole = (userToCheck as IGuildUser).Guild.Roles.Contains(adminRole);
+            var userToCheck = Context.User as SocketGuildUser;
+            var adminRole = Context.Guild.GetRole(ulong.Parse(_config["ids:beheerderrol"]));
+            var hasAdminRole = (userToCheck as IGuildUser).Guild.Roles.Contains(adminRole);
 
             if (!hasAdminRole)
             {
                 await ReplyAsync("U heeft niet voldoende rechten om dit commando uit te voeren!");
                 return;
             }
-            else
-            {
-                Console.WriteLine("MakeReminderAsync");
-                SocketGuild guild = _client.GetGuild(ulong.Parse(_config["ids:server"]));
-                SocketTextChannel channel = guild.GetTextChannel(channelId);
 
-                if (channel == null)
-                {
-                    await ReplyAsync("Er is geen tekstkanaal gevonden met de gegeven channel id.");
-                }
-                else
-                {
-                    await channel.SendMessageAsync(text);
-                }
-            }
+            Console.WriteLine("MakeReminderAsync");
+            var guild = _client.GetGuild(ulong.Parse(_config["ids:server"]));
+            var channel = guild.GetTextChannel(channelId);
+
+            if (channel == null)
+                await ReplyAsync("Er is geen tekstkanaal gevonden met de gegeven channel id.");
+            else
+                await channel.SendMessageAsync(text);
         }
 
         [Command("remindnonverified")]
@@ -100,39 +96,37 @@ namespace APTI_BOT.Modules
         [RequireUserPermission(GuildPermission.Administrator)]
         public async Task RemindNonVerifiedUsersAsync()
         {
-            SocketGuildUser userToCheck = Context.User as SocketGuildUser;
-            SocketRole adminRole = Context.Guild.GetRole(ulong.Parse(_config["ids:beheerderrol"]));
-            bool hasAdminRole = (userToCheck as IGuildUser).Guild.Roles.Contains(adminRole);
+            var userToCheck = Context.User as SocketGuildUser;
+            var adminRole = Context.Guild.GetRole(ulong.Parse(_config["ids:beheerderrol"]));
+            var hasAdminRole = (userToCheck as IGuildUser).Guild.Roles.Contains(adminRole);
 
             if (!hasAdminRole)
             {
                 await ReplyAsync("U heeft niet voldoende rechten om dit commando uit te voeren!");
                 return;
             }
-            else
+
+            Console.WriteLine("RemindNonVerifiedUsersAsync");
+            var guild = Context.Guild;
+            var channel = guild.GetTextChannel(ulong.Parse(_config["ids:nietgeverifieerdlog"]));
+            var notVerifiedRole = guild.GetRole(ulong.Parse(_config["ids:nietgeverifieerdrol"]));
+
+            if (channel == null)
             {
-                Console.WriteLine("RemindNonVerifiedUsersAsync");
-                SocketGuild guild = Context.Guild;
-                SocketTextChannel channel = guild.GetTextChannel(ulong.Parse(_config["ids:nietgeverifieerdlog"]));
-                SocketRole notVerifiedRole = guild.GetRole(ulong.Parse(_config["ids:nietgeverifieerdrol"]));
+                await ReplyAsync("Er is geen 'niet-geverifieerd' tekstkanaal gevonden!");
+                return;
+            }
 
-                if (channel == null)
-                {
-                    await ReplyAsync("Er is geen 'niet-geverifieerd' tekstkanaal gevonden!");
-                    return;
-                }
-                else
-                {
-                    await channel.SendMessageAsync("@everyone Vergeet niet om je te laten verifiëren! Lukt dit niet, contacteer dan een van de beheerders. Wij ruimen namelijk alle gebruikers van deze server op die zich nog niet hebben geverifieerd.");
+            await channel.SendMessageAsync(
+                "@everyone Vergeet niet om je te laten verifiëren! Lukt dit niet, contacteer dan een van de beheerders. Wij ruimen namelijk alle gebruikers van deze server op die zich nog niet hebben geverifieerd.");
 
-                    IReadOnlyCollection<SocketGuildUser> users = channel.Users;
-                    IEnumerable<SocketGuildUser> nonVerifiedUsers = users.Where(user => user.Roles.Contains(notVerifiedRole));
-                    foreach (SocketGuildUser nonVerifiedUser in nonVerifiedUsers)
-                    {
-                        Console.WriteLine($"DM verstuurd naar {nonVerifiedUser.Nickname}!");
-                        await nonVerifiedUser.SendMessageAsync($"Hey {nonVerifiedUser.Nickname}, ik wilde je even laten herinneren dat je je nog niet geverifieerd hebt in onze APTI-server. Probeer dit zo snel mogelijk te doen!\n\nps: Een sessie kan je starten door `!start` naar mij te sturen! :)");
-                    }
-                }
+            var users = channel.Users;
+            var nonVerifiedUsers = users.Where(user => user.Roles.Contains(notVerifiedRole));
+            foreach (var nonVerifiedUser in nonVerifiedUsers)
+            {
+                Console.WriteLine($"DM verstuurd naar {nonVerifiedUser.Nickname}!");
+                await nonVerifiedUser.SendMessageAsync(
+                    $"Hey {nonVerifiedUser.Nickname}, ik wilde je even laten herinneren dat je je nog niet geverifieerd hebt in onze APTI-server. Probeer dit zo snel mogelijk te doen!\n\nps: Een sessie kan je starten door `!start` naar mij te sturen! :)");
             }
         }
 
@@ -142,21 +136,19 @@ namespace APTI_BOT.Modules
         [RequireUserPermission(GuildPermission.Administrator)]
         public async Task DownloadAllUserDataAsync()
         {
-            SocketGuildUser userToCheck = Context.User as SocketGuildUser;
-            SocketRole adminRole = Context.Guild.GetRole(ulong.Parse(_config["ids:beheerderrol"]));
-            bool role = (userToCheck as IGuildUser).Guild.Roles.Contains(adminRole);
+            var userToCheck = Context.User as SocketGuildUser;
+            var adminRole = Context.Guild.GetRole(ulong.Parse(_config["ids:beheerderrol"]));
+            var role = (userToCheck as IGuildUser).Guild.Roles.Contains(adminRole);
 
             if (!role)
             {
                 await ReplyAsync("U heeft niet voldoende rechten om dit commando uit te voeren!");
                 return;
             }
-            else
-            {
-                Console.WriteLine("Start user download...");
-                await Context.Guild.DownloadUsersAsync();
-                Console.WriteLine("Download completed.");
-            }
+
+            Console.WriteLine("Start user download...");
+            await Context.Guild.DownloadUsersAsync();
+            Console.WriteLine("Download completed.");
         }
     }
 }

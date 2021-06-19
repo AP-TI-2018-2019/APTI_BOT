@@ -1,16 +1,17 @@
-﻿using APTI_BOT.Common;
+﻿using System;
+using System.Threading.Tasks;
+using APTI_BOT.Common;
 using Discord.Commands;
 using Discord.WebSocket;
 using Microsoft.Extensions.Configuration;
-using System.Threading.Tasks;
 
 namespace APTI_BOT.Modules
 {
     [Name("Contributor commando's")]
     public class ContributorsModule : ModuleBase<SocketCommandContext>
     {
-        private readonly IConfigurationRoot _config;
         private readonly DiscordSocketClient _client;
+        private readonly IConfigurationRoot _config;
 
         public ContributorsModule(IConfigurationRoot config, DiscordSocketClient client)
         {
@@ -22,8 +23,8 @@ namespace APTI_BOT.Modules
         [Summary("Vraag de contributors van de Discord bot op.")]
         public async Task AskContributorsAsync()
         {
-            System.Console.WriteLine("AskContributorsAsync");
-            await ReplyAsync($"{Contributors.GetContributors()}", false, null);
+            Console.WriteLine("AskContributorsAsync");
+            await ReplyAsync($"{Contributors.GetContributors()}");
         }
     }
 }

@@ -1,5 +1,5 @@
-﻿using Discord;
-using System.Text.RegularExpressions;
+﻿using System.Text.RegularExpressions;
+using Discord;
 
 namespace APTI_BOT.Common
 {
@@ -7,17 +7,14 @@ namespace APTI_BOT.Common
     {
         public static bool IsAUser(this IUser user)
         {
-            if (user == null)
-            {
-                return false;
-            }
+            if (user == null) return false;
 
             return !user.IsBot && !user.IsWebhook;
         }
 
         public static bool IsValidName(this string name)
         {
-            return Regex.Match(name, "\\w+ - [1-3][A-Z]+[\\w|\\d]").Success;
+            return Regex.Match(name, "\\w+ - [1-3][A-Z]+[\\w|\\d]+").Success;
         }
     }
 }

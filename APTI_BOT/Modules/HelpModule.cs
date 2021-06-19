@@ -1,17 +1,18 @@
-﻿using Discord;
-using Discord.Commands;
-using Microsoft.Extensions.Configuration;
+﻿using System;
 using System.Linq;
 using System.Threading.Tasks;
+using Discord;
+using Discord.Commands;
+using Microsoft.Extensions.Configuration;
 
 namespace APTI_BOT.Modules
 {
     [Name("Hulp commando's")]
     public class HelpModule : ModuleBase<SocketCommandContext>
     {
-        private readonly CommandService _service;
         private readonly IConfigurationRoot _config;
         private readonly string _prefix;
+        private readonly CommandService _service;
 
         public HelpModule(CommandService service, IConfigurationRoot config)
         {
@@ -25,34 +26,29 @@ namespace APTI_BOT.Modules
         [Summary("Samenvattingstabel van alle commando's van de APTI-bot.")]
         public async Task HelpAsync()
         {
-            System.Console.WriteLine("HelpAsync");
-            EmbedBuilder builder = new EmbedBuilder()
+            Console.WriteLine("HelpAsync");
+            var builder = new EmbedBuilder
             {
                 Color = new Color(114, 137, 218),
                 Description = "Dit zijn de commando's die je kan uitvoeren:"
             };
 
-            foreach (ModuleInfo module in _service.Modules)
+            foreach (var module in _service.Modules)
             {
                 string description = null;
-                foreach (CommandInfo cmd in module.Commands)
+                foreach (var cmd in module.Commands)
                 {
-                    PreconditionResult result = await cmd.CheckPreconditionsAsync(Context);
-                    if (result.IsSuccess)
-                    {
-                        description += $"{_prefix}{cmd.Aliases.First()}\n";
-                    }
+                    var result = await cmd.CheckPreconditionsAsync(Context);
+                    if (result.IsSuccess) description += $"{_prefix}{cmd.Aliases.First()}\n";
                 }
 
                 if (!string.IsNullOrWhiteSpace(description))
-                {
                     builder.AddField(x =>
                     {
                         x.Name = module.Name;
                         x.Value = description;
                         x.IsInline = false;
                     });
-                }
             }
 
             await ReplyAsync("", false, builder.Build());
@@ -62,36 +58,35 @@ namespace APTI_BOT.Modules
         [Summary("Samenvattingstabel van alle commando's die met het ingevoerde woord beginnen.")]
         public async Task HelpAsync(string commando)
         {
-            SearchResult result = _service.Search(Context, commando);
+            var result = _service.Search(Context, commando);
 
             if (!result.IsSuccess)
             {
                 await ReplyAsync($"Sorry, wij vonden geen commando zoals **{commando}**.");
+                return;
             }
-            else
+
+            Console.WriteLine("HelpAsync(commando)");
+            var builder = new EmbedBuilder
             {
-                System.Console.WriteLine("HelpAsync(commando)");
-                EmbedBuilder builder = new EmbedBuilder()
+                Color = new Color(114, 137, 218),
+                Description = $"Hier zijn alle commando's zoals **{commando}**"
+            };
+
+            foreach (var match in result.Commands)
+            {
+                var cmd = match.Command;
+
+                builder.AddField(x =>
                 {
-                    Color = new Color(114, 137, 218),
-                    Description = $"Hier zijn alle commando's zoals **{commando}**"
-                };
-
-                foreach (CommandMatch match in result.Commands)
-                {
-                    CommandInfo cmd = match.Command;
-
-                    builder.AddField(x =>
-                    {
-                        x.Name = string.Join(", ", cmd.Aliases);
-                        x.Value = $"Parameters: {string.Join(", ", cmd.Parameters.Select(p => p.Name))}\n" +
-                                  $"Samenvatting: {cmd.Summary}";
-                        x.IsInline = false;
-                    });
-                }
-
-                await ReplyAsync("", false, builder.Build());
+                    x.Name = string.Join(", ", cmd.Aliases);
+                    x.Value = $"Parameters: {string.Join(", ", cmd.Parameters.Select(p => p.Name))}\n" +
+                              $"Samenvatting: {cmd.Summary}";
+                    x.IsInline = false;
+                });
             }
+
+            await ReplyAsync("", false, builder.Build());
         }
     }
 }
