@@ -41,7 +41,7 @@ namespace APTI_BOT.Modules
             Console.WriteLine("CorrectUserRolesByCourseAsync");
             var tiRole = Context.Guild.GetRole(ulong.Parse(_config["ids:toegepasteinformatierol"]));
             var eictRole = Context.Guild.GetRole(ulong.Parse(_config["ids:elektronicaictrol"]));
-            var proRole = Context.Guild.GetRole(ulong.Parse(_config["ids:programmerenrol"]));
+            var progRole = Context.Guild.GetRole(ulong.Parse(_config["ids:programmerenrol"]));
             var users = Context.Guild.Users;
 
             foreach (var user in users)
@@ -51,16 +51,16 @@ namespace APTI_BOT.Modules
                 if (user.Nickname.Contains("EICT"))
                 {
                     await user.AddRoleAsync(eictRole);
-                    await user.RemoveRolesAsync(new List<IRole> {tiRole, proRole});
+                    await user.RemoveRolesAsync(new List<IRole> {tiRole, progRole});
                 }
                 else if (user.Nickname.Contains("TI") || user.Nickname.Contains("IT"))
                 {
                     await user.AddRoleAsync(tiRole);
-                    await user.RemoveRolesAsync(new List<IRole> {eictRole, proRole});
+                    await user.RemoveRolesAsync(new List<IRole> {eictRole, progRole});
                 }
-                else if (user.Nickname.Contains("PRO"))
+                else if (user.Nickname.Contains("PROG"))
                 {
-                    await user.AddRoleAsync(proRole);
+                    await user.AddRoleAsync(progRole);
                     await user.RemoveRolesAsync(new List<IRole> {eictRole, tiRole});
                 }
             }

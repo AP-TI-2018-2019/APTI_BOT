@@ -37,7 +37,7 @@ namespace APTI_BOT.Modules
                 if (!message.IsValidName())
                 {
                     await ReplyAsync(
-                        "Je hebt je naam in een niet-geldig formaat ingevoerd. Gelieve het volgende formaat te volgen: `!naam Jouwnaam - (1-3)(TI/EICT/PRO)(Optioneel: Specialisatie)(Optioneel: klasgroep)`.\nVoorbeeld 1: `!naam Dana - 3TIA`\nVoorbeeld 2: `!naam Kevin - 1EICTD`\nVoorbeeld 3: `!naam Yorgi - 1ITIOT1`\nVoorbeeld 3: `!naam Kobe - 1PRO1`");
+                        "Je hebt je naam in een niet-geldig formaat ingevoerd. Gelieve het volgende formaat te volgen: `!naam Jouwnaam - (1-3)(TI/EICT/PROG)(Optioneel: Specialisatie)(Optioneel: klasgroep)`.\nVoorbeeld 1: `!naam Dana - 3TIA`\nVoorbeeld 2: `!naam Kevin - 1EICTD`\nVoorbeeld 3: `!naam Yorgi - 1ITIOT1`\nVoorbeeld 3: `!naam Kobe - 1PRO1`");
                     return;
                 }
 
@@ -109,21 +109,21 @@ namespace APTI_BOT.Modules
                 {
                     var tiRole = guild.GetRole(ulong.Parse(_config["ids:toegepasteinformatierol"]));
                     var eictRole = guild.GetRole(ulong.Parse(_config["ids:elektronicaictrol"]));
-                    var proRole = Context.Guild.GetRole(ulong.Parse(_config["ids:programmerenrol"]));
+                    var progRole = Context.Guild.GetRole(ulong.Parse(_config["ids:programmerenrol"]));
 
                     if (user.Nickname.Contains("EICT"))
                     {
                         await user.AddRoleAsync(eictRole);
-                        await user.RemoveRolesAsync(new List<IRole> {tiRole, proRole});
+                        await user.RemoveRolesAsync(new List<IRole> {tiRole, progRole});
                     }
                     else if (user.Nickname.Contains("TI") || user.Nickname.Contains("IT"))
                     {
                         await user.AddRoleAsync(tiRole);
-                        await user.RemoveRolesAsync(new List<IRole> {eictRole, proRole});
+                        await user.RemoveRolesAsync(new List<IRole> {eictRole, progRole});
                     }
-                    else if (user.Nickname.Contains("PRO"))
+                    else if (user.Nickname.Contains("PROG"))
                     {
-                        await user.AddRoleAsync(proRole);
+                        await user.AddRoleAsync(progRole);
                         await user.RemoveRolesAsync(new List<IRole> {eictRole, tiRole});
                     }
                 }
