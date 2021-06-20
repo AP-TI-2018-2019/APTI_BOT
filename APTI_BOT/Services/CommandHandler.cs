@@ -1,9 +1,9 @@
-﻿using APTI_BOT.Common;
+﻿using System;
+using System.Threading.Tasks;
+using APTI_BOT.Common;
 using Discord.Commands;
 using Discord.WebSocket;
 using Microsoft.Extensions.Configuration;
-using System;
-using System.Threading.Tasks;
 
 namespace APTI_BOT.Services
 {
@@ -31,27 +31,22 @@ namespace APTI_BOT.Services
         private async Task OnMessageReceivedAsync(SocketMessage s)
         {
             // Ensure the message is from a user/bot
-            if (!(s is SocketUserMessage msg))
-            {
-                return;
-            }
+            if (!(s is SocketUserMessage msg)) return;
 
             if (msg.Author.Id == _client.CurrentUser.Id || !s.Author.IsAUser())
+                return; // Ignore self when checking commands
+
+            var context = new SocketCommandContext(_client, msg); // Create the command context
+
+            var argPos = 0; // Check if the message has a valid command prefix
+            if (msg.HasStringPrefix(_config["prefix"], ref argPos) ||
+                msg.HasMentionPrefix(_client.CurrentUser, ref argPos))
             {
-                return;     // Ignore self when checking commands
-            }
+                var result = await _commands.ExecuteAsync(context, argPos, _provider); // Execute the command
 
-            SocketCommandContext context = new SocketCommandContext(_client, msg);     // Create the command context
-
-            int argPos = 0;     // Check if the message has a valid command prefix
-            if (msg.HasStringPrefix(_config["prefix"], ref argPos) || msg.HasMentionPrefix(_client.CurrentUser, ref argPos))
-            {
-                IResult result = await _commands.ExecuteAsync(context, argPos, _provider);     // Execute the command
-
-                if (!result.IsSuccess)     // If not successful, reply with the error.
-                {
-                    await context.Channel.SendMessageAsync("Dit commando werd niet gevonden! Kijk na of je typefouten hebt gemaakt.");
-                }
+                if (!result.IsSuccess) // If not successful, reply with the error.
+                    await context.Channel.SendMessageAsync(
+                        "Dit commando werd niet gevonden! Kijk na of je typefouten hebt gemaakt.");
             }
         }
     }

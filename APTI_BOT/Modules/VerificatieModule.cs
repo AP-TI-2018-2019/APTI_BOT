@@ -1,22 +1,20 @@
-﻿using APTI_BOT.Common;
-using Discord;
-using Discord.Commands;
-using Discord.Rest;
-using Discord.WebSocket;
-using Microsoft.Extensions.Configuration;
-using System;
-using System.Collections.Generic;
+﻿using System;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using APTI_BOT.Common;
+using Discord;
+using Discord.Commands;
+using Discord.WebSocket;
+using Microsoft.Extensions.Configuration;
 
 namespace APTI_BOT.Modules
 {
     [Name("Verificatie commando's")]
     public class VerificatieModule : ModuleBase<SocketCommandContext>
     {
-        private readonly IConfigurationRoot _config;
         private readonly DiscordSocketClient _client;
+        private readonly IConfigurationRoot _config;
 
         public VerificatieModule(IConfigurationRoot config, DiscordSocketClient client)
         {
@@ -29,113 +27,107 @@ namespace APTI_BOT.Modules
 
         public async Task CreateEmbedInVerificationChannelAsync(SocketMessage message)
         {
-            if (!message.Author.IsAUser())
-            {
-                return;
-            }
+            if (!message.Author.IsAUser()) return;
 
-            if (message.Channel is IPrivateChannel && message.Source == MessageSource.User && message.Attachments.Count > 0)
+            if (message.Channel is IPrivateChannel && message.Source == MessageSource.User &&
+                message.Attachments.Count > 0)
             {
                 Console.WriteLine("I'm making another embed!");
-                EmbedBuilder embedBuilder = new EmbedBuilder().WithTitle("Verificatie student");
+                var embedBuilder = new EmbedBuilder().WithTitle("Verificatie student");
                 foreach (IAttachment attachment in message.Attachments)
-                {
                     if (attachment.IsSpoiler())
-                    {
-                        embedBuilder = embedBuilder.AddField("Foto", $"||{attachment.Url}||", false);
-                    }
+                        embedBuilder = embedBuilder.AddField("Foto", $"||{attachment.Url}||");
                     else
-                    {
                         embedBuilder = embedBuilder.WithImageUrl(attachment.Url);
-                    }
-                }
-                Embed embed = embedBuilder
-                    .AddField("Id", message.Author.Id.ToString(), false)
+
+                var embed = embedBuilder
+                    .AddField("Id", message.Author.Id.ToString())
                     .WithAuthor(message.Author.ToString(), message.Author.GetAvatarUrl())
                     .WithColor(Color.Blue)
                     .WithFooter(footer => footer.WithText($"Account gecreëerd op: {message.Author.CreatedAt}"))
                     .WithTimestamp(DateTime.Now.ToLocalTime())
                     .Build();
-                SocketGuild _guild = _client.GetGuild(ulong.Parse(_config["ids:server"]));
-                ISocketMessageChannel verificationLogChannel = ((ISocketMessageChannel)_guild.GetChannel(ulong.Parse(_config["ids:verificatielog"])));
-                RestUserMessage verificationEmbed = await verificationLogChannel.SendMessageAsync("", false, embed);
+                var guild = _client.GetGuild(ulong.Parse(_config["ids:server"]));
+                var verificationLogChannel =
+                    (ISocketMessageChannel) guild.GetChannel(ulong.Parse(_config["ids:verificatielog"]));
+                var verificationEmbed = await verificationLogChannel.SendMessageAsync("", false, embed);
                 await verificationEmbed.AddReactionsAsync(Emojis.emojiVerificatie);
             }
         }
 
-        public async Task VerifyIdAsync(Cacheable<IUserMessage, ulong> message, ISocketMessageChannel channel, SocketReaction reaction)
+        public async Task VerifyIdAsync(Cacheable<IUserMessage, ulong> message, ISocketMessageChannel channel,
+            SocketReaction reaction)
         {
-            if (!reaction.User.Value.IsAUser())
-            {
-                return;
-            }
+            if (!reaction.User.Value.IsAUser()) return;
 
             if (reaction.Channel.Id == ulong.Parse(_config["ids:verificatielog"]))
             {
                 Console.WriteLine("VerifyIdAsync");
 
-                SocketGuild _guild = _client.GetGuild(ulong.Parse(_config["ids:server"]));
-                SocketRole _studentRole = _guild.GetRole(ulong.Parse(_config["ids:studentrol"]));
-                SocketRole _notVerifiedRole = _guild.GetRole(ulong.Parse(_config["ids:nietgeverifieerdrol"]));
-                IEnumerator<IEmbed> embeds = message.DownloadAsync().Result.Embeds.GetEnumerator();
+                var guild = _client.GetGuild(ulong.Parse(_config["ids:server"]));
+                var studentRole = guild.GetRole(ulong.Parse(_config["ids:studentrol"]));
+                var notVerifiedRole = guild.GetRole(ulong.Parse(_config["ids:nietgeverifieerdrol"]));
+                var embeds = message.DownloadAsync().Result.Embeds.GetEnumerator();
                 embeds.MoveNext();
-                bool isStudent = _guild.GetUser(ulong.Parse(embeds.Current.Fields[0].Value)).Roles.Contains(_studentRole);
+                var isStudent = guild.GetUser(ulong.Parse(embeds.Current.Fields[0].Value)).Roles
+                    .Contains(studentRole);
                 if (!isStudent)
                 {
-                    if (reaction.Emote.ToString().Equals(Emojis.ACCEPTEER_EMOJI.ToString()) && !reaction.User.Value.IsBot)
+                    if (reaction.Emote.ToString().Equals(Emojis.ACCEPTEER_EMOJI.ToString()) &&
+                        !reaction.User.Value.IsBot)
                     {
-                        SocketGuildUser user = _guild.GetUser(ulong.Parse(embeds.Current.Fields[0].Value));
-                        await user.AddRoleAsync(_studentRole);
-                        await user.RemoveRoleAsync(_notVerifiedRole);
+                        var user = guild.GetUser(ulong.Parse(embeds.Current.Fields[0].Value));
+                        await user.AddRoleAsync(studentRole);
+                        await user.RemoveRoleAsync(notVerifiedRole);
 
 
-                        StringBuilder text = new StringBuilder();
+                        var text = new StringBuilder();
                         text.Append("Jouw inzending werd zojuist goedgekeurd.");
-                        text.Append(" Indien gewenst heb je nu de mogelijkheid om jouw verificatie-afbeelding te verwijderen.");
-                        text.Append(" De volgende stap is het kiezen van jouw jaar  door te klikken op één (of meerdere) emoji onder dit bericht.");
+                        text.AppendLine(
+                            " Indien gewenst heb je nu de mogelijkheid om jouw verificatie-afbeelding te verwijderen.");
+                        text.AppendLine(
+                            "Naast deel te nemen van de server, heb je ook de mogelijkheid om deel te nemen aan de studentenvereniging van de richting! Neem eens een kijkje in onze #bovis-grafica kanaal voor meer informatie.");
+                        text.Append(
+                            " De volgende stap is het kiezen van jouw jaar  door te klikken op één (of meerdere) emoji onder dit bericht.");
                         text.Append(" Als je vakken moet meenemen, dan kan je ook het vorige jaar kiezen.");
-                        text.Append(" Als je geen kanalen meer wilt zien van een jaar, dan kan je gewoon opnieuw op de emoji ervan klikken.");
-                        text.Append(" Als je jaar niet verandert, dan is de sessie van deze chat verlopen en moet je de sessie terug activeren door `!jaar` te typen.");
-                        IUserMessage sent = await user.SendMessageAsync(text.ToString());
+                        text.Append(
+                            " Als je geen kanalen meer wilt zien van een jaar, dan kan je gewoon opnieuw op de emoji ervan klikken.");
+                        text.Append(
+                            " Als je jaar niet verandert, dan is de sessie van deze chat verlopen en moet je de sessie terug activeren door `!jaar` te typen.");
+                        var sent = await user.SendMessageAsync(text.ToString());
                         await sent.AddReactionsAsync(Emojis.emojiJaren);
                     }
-                    else if (reaction.Emote.ToString().Equals(Emojis.WEIGER_EMOJI.ToString()) && !reaction.User.Value.IsBot)
+                    else if (reaction.Emote.ToString().Equals(Emojis.WEIGER_EMOJI.ToString()) &&
+                             !reaction.User.Value.IsBot)
                     {
-                        await _guild.GetUser(ulong.Parse(embeds.Current.Fields[0].Value)).SendMessageAsync("Jouw inzending werd afgekeurd. Dien een nieuwe foto in.");
+                        await guild.GetUser(ulong.Parse(embeds.Current.Fields[0].Value))
+                            .SendMessageAsync("Jouw inzending werd afgekeurd. Dien een nieuwe foto in.");
                     }
                 }
             }
-
-            return;
         }
 
-        public async Task AddYearAsync(Cacheable<IUserMessage, ulong> message, ISocketMessageChannel channel, SocketReaction reaction)
+        public async Task AddYearAsync(Cacheable<IUserMessage, ulong> message, ISocketMessageChannel channel,
+            SocketReaction reaction)
         {
-            if (!reaction.User.Value.IsAUser())
-            {
-                return;
-            }
+            if (!reaction.User.Value.IsAUser()) return;
 
             if (channel is IPrivateChannel && !reaction.User.Value.IsBot)
             {
                 Console.WriteLine("AddYearAsync");
 
-                SocketGuild _guild = _client.GetGuild(ulong.Parse(_config["ids:server"]));
+                var guild = _client.GetGuild(ulong.Parse(_config["ids:server"]));
+                SocketRole role = null;
+
                 if (reaction.Emote.ToString() == Emojis.JAAR_1_EMOJI.ToString())
-                {
-                    SocketRole role = _guild.GetRole(ulong.Parse(_config["ids:jaar1rol"]));
-                    await _guild.GetUser(reaction.UserId).AddRoleAsync(role);
-                }
+                    role = guild.GetRole(ulong.Parse(_config["ids:jaar1rol"]));
                 else if (reaction.Emote.ToString() == Emojis.JAAR_2_EMOJI.ToString())
-                {
-                    SocketRole role = _guild.GetRole(ulong.Parse(_config["ids:jaar2rol"]));
-                    await _guild.GetUser(reaction.UserId).AddRoleAsync(role);
-                }
+                    role = guild.GetRole(ulong.Parse(_config["ids:jaar2rol"]));
                 else if (reaction.Emote.ToString() == Emojis.JAAR_3_EMOJI.ToString())
-                {
-                    SocketRole role = _guild.GetRole(ulong.Parse(_config["ids:jaar3rol"]));
-                    await _guild.GetUser(reaction.UserId).AddRoleAsync(role);
-                }
+                    role = guild.GetRole(ulong.Parse(_config["ids:jaar3rol"]));
+
+                if (role != null)
+                    await guild.GetUser(reaction.UserId).AddRoleAsync(role);
             }
         }
     }

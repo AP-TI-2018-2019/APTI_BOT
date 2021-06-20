@@ -21,7 +21,7 @@ namespace APTI_BOT.Common
         /*
          * Emoji arrays
          */
-        public static readonly Emoji[] emojiJaren = new Emoji[] { JAAR_1_EMOJI, JAAR_2_EMOJI, JAAR_3_EMOJI };
-        public static readonly Emoji[] emojiVerificatie = new Emoji[] { ACCEPTEER_EMOJI, WEIGER_EMOJI };
+        public static readonly IEmote[] emojiJaren = {JAAR_1_EMOJI, JAAR_2_EMOJI, JAAR_3_EMOJI};
+        public static readonly IEmote[] emojiVerificatie = {ACCEPTEER_EMOJI, WEIGER_EMOJI};
     }
 }
