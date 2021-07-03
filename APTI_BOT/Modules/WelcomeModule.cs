@@ -20,8 +20,8 @@ namespace APTI_BOT.Modules
         {
             _config = config;
             _client = client;
-            //_client.UserJoined += AnnounceJoinedUserAsync;
-            _client.MessageReceived += AnnounceJoinedUserMessageAsync;
+            _client.UserJoined += AnnounceJoinedUserAsync;
+            // _client.MessageReceived += AnnounceJoinedUserMessageAsync;
         }
 
         private async Task AnnounceJoinedUserMessageAsync(SocketMessage msg)
@@ -43,12 +43,14 @@ namespace APTI_BOT.Modules
         private async Task AnnounceJoinedUserAsync(SocketGuildUser arg)
         {
             if (!arg.IsAUser()) return;
+            var guild = _client.GetGuild(ulong.Parse(_config["ids:server"]));
+            var channel = guild.GetTextChannel(ulong.Parse(_config["ids:welkomlog"]));
+
+            await channel.SendMessageAsync($"Welkom in de server {arg.Mention}! Ik heb je een bericht gestuurd om het verificatieproces van start te laten gaan!");
 
             Console.WriteLine("AnnounceJoinedUserAsync");
             await arg.SendMessageAsync(GetWelcomeText());
 
-            var guild = _client.GetGuild(ulong.Parse(_config["ids:server"]));
-            var welcomeChannel = guild.GetTextChannel(ulong.Parse(_config["ids:welkomlog"]));
             var studentRole = guild.GetRole(ulong.Parse(_config["ids:studentrol"]));
             var notVerifiedRole = guild.GetRole(ulong.Parse(_config["ids:nietgeverifieerdrol"]));
             if (!arg.Roles.Contains(studentRole)) await arg.AddRoleAsync(notVerifiedRole);
