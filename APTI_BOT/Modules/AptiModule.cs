@@ -109,7 +109,7 @@ namespace APTI_BOT.Modules
                 {
                     var tiRole = guild.GetRole(ulong.Parse(_config["ids:toegepasteinformatierol"]));
                     var eictRole = guild.GetRole(ulong.Parse(_config["ids:elektronicaictrol"]));
-                    var progRole = Context.Guild.GetRole(ulong.Parse(_config["ids:programmerenrol"]));
+                    var progRole = guild.GetRole(ulong.Parse(_config["ids:programmerenrol"]));
 
                     if (user.Nickname.Contains("EICT"))
                     {
