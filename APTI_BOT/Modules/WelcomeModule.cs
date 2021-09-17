@@ -46,13 +46,14 @@ namespace APTI_BOT.Modules
             var guild = _client.GetGuild(ulong.Parse(_config["ids:server"]));
             var channel = guild.GetTextChannel(ulong.Parse(_config["ids:welkomlog"]));
 
+            var notVerifiedRole = guild.GetRole(ulong.Parse(_config["ids:nietgeverifieerdrol"]));
+            if (arg.Roles.Contains(notVerifiedRole)) return;
             await channel.SendMessageAsync($"Welkom in de server {arg.Mention}! Ik heb je een bericht gestuurd om het verificatieproces van start te laten gaan!");
 
             Console.WriteLine("AnnounceJoinedUserAsync");
             await arg.SendMessageAsync(GetWelcomeText());
 
             var studentRole = guild.GetRole(ulong.Parse(_config["ids:studentrol"]));
-            var notVerifiedRole = guild.GetRole(ulong.Parse(_config["ids:nietgeverifieerdrol"]));
             if (!arg.Roles.Contains(studentRole)) await arg.AddRoleAsync(notVerifiedRole);
         }
 
