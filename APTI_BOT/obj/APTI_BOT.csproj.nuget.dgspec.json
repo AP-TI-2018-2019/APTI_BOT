@@ -1,21 +1,18 @@
 {
   "format": 1,
   "restore": {
-    "D:\\Users\\danai\\Documents\\GitHub\\APTI_BOT\\APTI_BOT\\APTI_BOT.csproj": {}
+    "C:\\Users\\danai\\Documents\\GitProjects\\APTI_BOT\\APTI_BOT\\APTI_BOT.csproj": {}
   },
   "projects": {
-    "D:\\Users\\danai\\Documents\\GitHub\\APTI_BOT\\APTI_BOT\\APTI_BOT.csproj": {
+    "C:\\Users\\danai\\Documents\\GitProjects\\APTI_BOT\\APTI_BOT\\APTI_BOT.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "D:\\Users\\danai\\Documents\\GitHub\\APTI_BOT\\APTI_BOT\\APTI_BOT.csproj",
+        "projectUniqueName": "C:\\Users\\danai\\Documents\\GitProjects\\APTI_BOT\\APTI_BOT\\APTI_BOT.csproj",
         "projectName": "APTI_BOT",
-        "projectPath": "D:\\Users\\danai\\Documents\\GitHub\\APTI_BOT\\APTI_BOT\\APTI_BOT.csproj",
+        "projectPath": "C:\\Users\\danai\\Documents\\GitProjects\\APTI_BOT\\APTI_BOT\\APTI_BOT.csproj",
         "packagesPath": "C:\\Users\\danai\\.nuget\\packages\\",
-        "outputPath": "D:\\Users\\danai\\Documents\\GitHub\\APTI_BOT\\APTI_BOT\\obj\\",
+        "outputPath": "C:\\Users\\danai\\Documents\\GitProjects\\APTI_BOT\\APTI_BOT\\obj\\",
         "projectStyle": "PackageReference",
-        "fallbackFolders": [
-          "C:\\Program Files\\dotnet\\sdk\\NuGetFallbackFolder"
-        ],
         "configFilePaths": [
           "C:\\Users\\danai\\AppData\\Roaming\\NuGet\\NuGet.Config",
           "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
@@ -29,6 +26,7 @@
         },
         "frameworks": {
           "netcoreapp3.1": {
+            "targetAlias": "netcoreapp3.1",
             "projectReferences": {}
           }
         },
@@ -40,22 +38,23 @@
       },
       "frameworks": {
         "netcoreapp3.1": {
+          "targetAlias": "netcoreapp3.1",
           "dependencies": {
             "Discord.Net": {
               "target": "Package",
-              "version": "[2.2.0, )"
+              "version": "[2.4.0, )"
             },
             "Microsoft.Extensions.Configuration": {
               "target": "Package",
-              "version": "[3.1.9, )"
+              "version": "[5.0.0, )"
             },
             "Microsoft.Extensions.Configuration.Abstractions": {
               "target": "Package",
-              "version": "[3.1.9, )"
+              "version": "[5.0.0, )"
             },
             "Microsoft.Extensions.DependencyInjection": {
               "target": "Package",
-              "version": "[3.1.9, )"
+              "version": "[5.0.2, )"
             },
             "Microsoft.NETCore.App": {
               "target": "Package",
@@ -63,11 +62,11 @@
             },
             "NetEscapades.Configuration.Yaml": {
               "target": "Package",
-              "version": "[2.0.1, )"
+              "version": "[2.1.0, )"
             },
             "Newtonsoft.Json": {
               "target": "Package",
-              "version": "[12.0.3, )"
+              "version": "[13.0.1, )"
             }
           },
           "imports": [
@@ -80,12 +79,30 @@
           ],
           "assetTargetFallback": true,
           "warn": true,
+          "downloadDependencies": [
+            {
+              "name": "Microsoft.AspNetCore.App.Ref",
+              "version": "[3.1.10, 3.1.10]"
+            },
+            {
+              "name": "Microsoft.NETCore.App.Host.win-x64",
+              "version": "[3.1.15, 3.1.15]"
+            },
+            {
+              "name": "Microsoft.NETCore.App.Ref",
+              "version": "[3.1.0, 3.1.0]"
+            },
+            {
+              "name": "Microsoft.WindowsDesktop.App.Ref",
+              "version": "[3.1.0, 3.1.0]"
+            }
+          ],
           "frameworkReferences": {
             "Microsoft.NETCore.App": {
               "privateAssets": "all"
             }
           },
-          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\3.1.403\\RuntimeIdentifierGraph.json"
+          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\6.0.100-preview.5.21302.13\\RuntimeIdentifierGraph.json"
         }
       }
     }
