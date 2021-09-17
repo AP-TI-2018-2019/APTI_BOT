@@ -114,17 +114,17 @@ namespace APTI_BOT.Modules
                     if (user.Nickname.Contains("EICT"))
                     {
                         await user.AddRoleAsync(eictRole);
-                        await user.RemoveRolesAsync(new List<IRole> {tiRole, progRole});
+                        await user.RemoveRolesAsync(new List<IRole> { tiRole, progRole });
                     }
                     else if (user.Nickname.Contains("TI") || user.Nickname.Contains("IT"))
                     {
                         await user.AddRoleAsync(tiRole);
-                        await user.RemoveRolesAsync(new List<IRole> {eictRole, progRole});
+                        await user.RemoveRolesAsync(new List<IRole> { eictRole, progRole });
                     }
                     else if (user.Nickname.Contains("PROG"))
                     {
                         await user.AddRoleAsync(progRole);
-                        await user.RemoveRolesAsync(new List<IRole> {eictRole, tiRole});
+                        await user.RemoveRolesAsync(new List<IRole> { eictRole, tiRole });
                     }
                 }
             }

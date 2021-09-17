@@ -48,7 +48,8 @@ namespace APTI_BOT.Modules
 
             var notVerifiedRole = guild.GetRole(ulong.Parse(_config["ids:nietgeverifieerdrol"]));
             if (arg.Roles.Contains(notVerifiedRole)) return;
-            await channel.SendMessageAsync($"Welkom in de server {arg.Mention}! Ik heb je een bericht gestuurd om het verificatieproces van start te laten gaan!");
+            await channel.SendMessageAsync(
+                $"Welkom in de server {arg.Mention}! Ik heb je een bericht gestuurd om het verificatieproces van start te laten gaan!");
 
             Console.WriteLine("AnnounceJoinedUserAsync");
             await arg.SendMessageAsync(GetWelcomeText());

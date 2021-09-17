@@ -1,20 +1,20 @@
 ﻿prefix: "!"
 tokens:
- discord: 
+  discord:
 ids:
- server: 
- jaar1rol: 
- jaar2rol: 
- jaar3rol: 
- studentrol: 
- nietgeverifieerdrol: 
- toegepasteinformatierol: 
- elektronicaictrol: 
- programmerenrol: 
- beheerderrol: 
- pinlog: 
- verificatielog: 
- welkomlog: 
- nietgeverifieerdlog: 
- feedbacklog: 
- studvertlog:
+  server:
+  jaar1rol:
+  jaar2rol:
+  jaar3rol:
+  studentrol:
+  nietgeverifieerdrol:
+  toegepasteinformatierol:
+  elektronicaictrol:
+  programmerenrol:
+  beheerderrol:
+  pinlog:
+  verificatielog:
+  welkomlog:
+  nietgeverifieerdlog:
+  feedbacklog:
+  studvertlog:

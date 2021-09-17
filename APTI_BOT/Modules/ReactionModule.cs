@@ -35,7 +35,7 @@ namespace APTI_BOT.Modules
                 var pinnedMessages = await channel.GetPinnedMessagesAsync();
                 if (pinnedMessages.Count >= PIN_LIMIT)
                 {
-                    await ((ISocketMessageChannel) _client.GetChannel(channel.Id)).SendMessageAsync(
+                    await ((ISocketMessageChannel)_client.GetChannel(channel.Id)).SendMessageAsync(
                         "Het maximaal aantal gepinde berichten is overschreden. Roep een @Beheerder om de gepinde berichten te herevalueren.");
                     return;
                 }
@@ -65,7 +65,7 @@ namespace APTI_BOT.Modules
                         .WithAuthor(messageToPin.Author.ToString(), messageToPin.Author.GetAvatarUrl(),
                             messageToPin.GetJumpUrl())
                         .Build();
-                    await ((ISocketMessageChannel) _client.GetChannel(ulong.Parse(_config["ids:pinlog"])))
+                    await ((ISocketMessageChannel)_client.GetChannel(ulong.Parse(_config["ids:pinlog"])))
                         .SendMessageAsync("", false, embed);
                 }
             }

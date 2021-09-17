@@ -12,6 +12,8 @@ namespace APTI_BOT.Modules
     [Name("Admin commando's")]
     public class AdminModule : ModuleBase<SocketCommandContext>
     {
+        public static string VERSION_NR = "2.0.1";
+
         private readonly DiscordSocketClient _client;
         private readonly IConfigurationRoot _config;
 
@@ -51,17 +53,17 @@ namespace APTI_BOT.Modules
                 if (user.Nickname.Contains("EICT"))
                 {
                     await user.AddRoleAsync(eictRole);
-                    await user.RemoveRolesAsync(new List<IRole> {tiRole, progRole});
+                    await user.RemoveRolesAsync(new List<IRole> { tiRole, progRole });
                 }
                 else if (user.Nickname.Contains("TI") || user.Nickname.Contains("IT"))
                 {
                     await user.AddRoleAsync(tiRole);
-                    await user.RemoveRolesAsync(new List<IRole> {eictRole, progRole});
+                    await user.RemoveRolesAsync(new List<IRole> { eictRole, progRole });
                 }
                 else if (user.Nickname.Contains("PROG"))
                 {
                     await user.AddRoleAsync(progRole);
-                    await user.RemoveRolesAsync(new List<IRole> {eictRole, tiRole});
+                    await user.RemoveRolesAsync(new List<IRole> { eictRole, tiRole });
                 }
             }
         }
@@ -149,6 +151,25 @@ namespace APTI_BOT.Modules
             Console.WriteLine("Start user download...");
             await Context.Guild.DownloadUsersAsync();
             Console.WriteLine("Download completed.");
+        }
+
+        [Command("version")]
+        [Summary("Toon de versie van de bot.")]
+        [RequireUserPermission(GuildPermission.Administrator)]
+        public async Task GetBotVersion()
+        {
+            var userToCheck = Context.User as SocketGuildUser;
+            var adminRole = Context.Guild.GetRole(ulong.Parse(_config["ids:beheerderrol"]));
+            var hasAdminRole = (userToCheck as IGuildUser).Guild.Roles.Contains(adminRole);
+
+            if (!hasAdminRole)
+            {
+                await ReplyAsync("U heeft niet voldoende rechten om dit commando uit te voeren!");
+                return;
+            }
+
+            Console.WriteLine("GetBotVersion");
+            await ReplyAsync($"De bot draait op versie: {VERSION_NR}");
         }
     }
 }

@@ -49,7 +49,7 @@ namespace APTI_BOT.Modules
                     .Build();
                 var guild = _client.GetGuild(ulong.Parse(_config["ids:server"]));
                 var verificationLogChannel =
-                    (ISocketMessageChannel) guild.GetChannel(ulong.Parse(_config["ids:verificatielog"]));
+                    (ISocketMessageChannel)guild.GetChannel(ulong.Parse(_config["ids:verificatielog"]));
                 var verificationEmbed = await verificationLogChannel.SendMessageAsync("", false, embed);
                 await verificationEmbed.AddReactionsAsync(Emojis.emojiVerificatie);
             }
