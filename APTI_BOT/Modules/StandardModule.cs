@@ -17,43 +17,44 @@ namespace APTI_BOT.Modules
             "Laat de bot je iets herinneren door een bericht en een datum mee te geven, bv. '!herinner mij om de planten buiten te zetten op 15/10/2020'.")]
         public async Task RemindMeToAsync([Remainder] string bericht)
         {
-            Console.WriteLine("RemindMeToAsync");
-            if (bericht.ToLower().Contains("morgen")
-                || bericht.ToLower().Contains("second")
-                || bericht.ToLower().Contains("minuten")
-                || bericht.ToLower().Contains("minuut")
-                || bericht.ToLower().Contains("uren")
-                || bericht.ToLower().Contains("uur")
-                || bericht.ToLower().Contains("dag")
-                || bericht.ToLower().Contains("jaar")
-                || bericht.ToLower().Contains("jaren")
-                || bericht.ToLower().Contains("maand"))
-            {
-                RemindNatural(bericht);
-            }
-            else
-            {
-                var splitsing = bericht.Split("@");
-                var message = splitsing[0];
+            await ReplyAsync("Deze functionaliteit is gebroken en wordt aan gewerkt.");
+            //Console.WriteLine("RemindMeToAsync");
+            //if (bericht.ToLower().Contains("morgen")
+            //    || bericht.ToLower().Contains("second")
+            //    || bericht.ToLower().Contains("minuten")
+            //    || bericht.ToLower().Contains("minuut")
+            //    || bericht.ToLower().Contains("uren")
+            //    || bericht.ToLower().Contains("uur")
+            //    || bericht.ToLower().Contains("dag")
+            //    || bericht.ToLower().Contains("jaar")
+            //    || bericht.ToLower().Contains("jaren")
+            //    || bericht.ToLower().Contains("maand"))
+            //{
+            //    RemindNatural(bericht);
+            //}
+            //else
+            //{
+            //    var splitsing = bericht.Split("@");
+            //    var message = splitsing[0];
 
-                if (!DateTime.TryParse(splitsing[1], out var datum))
-                {
-                    await ReplyAsync("De ingevoerde datum is ongeldig!");
-                }
-                else if (datum < DateTime.Now)
-                {
-                    await ReplyAsync("De ingevoerde datum bevindt zich in het verleden!");
-                }
-                else
-                {
-                    await ReplyAsync($"Oké: ik zal '{message}' naar je sturen op {datum}");
+            //    if (!DateTime.TryParse(splitsing[1], out var datum))
+            //    {
+            //        await ReplyAsync("De ingevoerde datum is ongeldig!");
+            //    }
+            //    else if (datum < DateTime.Now)
+            //    {
+            //        await ReplyAsync("De ingevoerde datum bevindt zich in het verleden!");
+            //    }
+            //    else
+            //    {
+            //        await ReplyAsync($"Oké: ik zal '{message}' naar je sturen op {datum}");
 
-                    var timer = new Timer((datum - DateTime.Now).TotalMilliseconds);
-                    timer.Elapsed += async (sender, e) => await NotifyUserAsync(sender, e, Context.User, message);
-                    timer.Enabled = true;
-                    timer.AutoReset = false;
-                }
-            }
+            //        var timer = new Timer((datum - DateTime.Now).TotalMilliseconds);
+            //        timer.Elapsed += async (sender, e) => await NotifyUserAsync(sender, e, Context.User, message);
+            //        timer.Enabled = true;
+            //        timer.AutoReset = false;
+            //    }
+            //}
         }
 
         private async Task NotifyUserAsync(object sender, ElapsedEventArgs e, SocketUser user, string message)
