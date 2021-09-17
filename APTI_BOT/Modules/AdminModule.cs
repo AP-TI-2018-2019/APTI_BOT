@@ -69,6 +69,7 @@ namespace APTI_BOT.Modules
         }
 
         [Command("botmessage")]
+        [Alias("dm")]
         [Summary("Laat de bot een bericht schrijven in een bepaald kanaal.")]
         [RequireUserPermission(GuildPermission.Administrator)]
         public async Task LetBotMessageAsync(ulong channelId, [Remainder] string text)
@@ -154,6 +155,7 @@ namespace APTI_BOT.Modules
         }
 
         [Command("version")]
+        [Alias("v")]
         [Summary("Toon de versie van de bot.")]
         [RequireUserPermission(GuildPermission.Administrator)]
         public async Task GetBotVersion()
