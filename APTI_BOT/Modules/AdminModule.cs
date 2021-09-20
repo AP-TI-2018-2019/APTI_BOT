@@ -12,7 +12,7 @@ namespace APTI_BOT.Modules
     [Name("Admin commando's")]
     public class AdminModule : ModuleBase<SocketCommandContext>
     {
-        public static string VERSION_NR = "2.0.1";
+        public static string VERSION_NR = "2.0.2 - Welkomfiks";
 
         private readonly DiscordSocketClient _client;
         private readonly IConfigurationRoot _config;
